@@ -24,7 +24,7 @@ io.on('connection', function (socket) {
 
 app.use(flash())
 app.use(cors({
-  "origin": "http://e-mobie.com",
+  "origin": process.env.VUE_URL,
   "credentials": true,
   "exposed": [
     'set-Cookie',
