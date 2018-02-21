@@ -284,6 +284,13 @@ function cancelEvent(req, res, error) {
           })
         })
       } else {
+        redis.smembers('PublicEvents').then(results => {
+          for (var i = 0; i < results.length; i++) {
+            if (JSON.parse(results[i]).rediskey == currentEvent.rediskey) {
+              redis.srem('PublicEvents', results[i])
+            }
+          }
+        })
         res.send({
           success: false,
           message: "Event Not Canceled",
