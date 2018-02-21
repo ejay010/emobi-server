@@ -261,6 +261,7 @@ function cancelEvent(req, res, error) {
   let redis = new ioredis();
   redis.hgetall(req.params.eventId).then(function (result) {
     let currentEvent = result
+    console.log(currentEvent);
     redis.srem('PublicEvents', JSON.stringify(currentEvent)).then((response, error) => {
       if (response) {
         currentEvent.status = 'unpublished'
