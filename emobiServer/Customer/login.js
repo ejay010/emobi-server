@@ -155,6 +155,7 @@ function editEvent(req, res, err) {
     currentEvent.startTime = Data.startTimestamp
     currentEvent.finishTime = Data.finishTimestamp
 
+console.log(currentEvent);
     redis.hmset(Data.eventID, currentEvent).then(function (result) {
       if (result == "OK") {
         redis.hgetall(Data.eventID).then(function (result) {
