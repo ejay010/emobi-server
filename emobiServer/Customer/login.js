@@ -146,19 +146,19 @@ function editEvent(req, res, err) {
   }
   // get redis object
   let redis = new ioredis();
-  redis.hgetall(Data.eventID).then(function (result) {
+  redis.hgetall(Data.eventObj.rediskey).then(function (result) {
     let currentEvent = result
     let originalTemp = result
-    currentEvent.description = Data.eventDescription
-    currentEvent.title = Data.eventTitle
+    currentEvent.description = Data.eventObj.eventDescription
+    currentEvent.title = Data.eventObj.title
     currentEvent.flyer = JSON.stringify(req.file)
     currentEvent.startTime = Data.startTimestamp
     currentEvent.finishTime = Data.finishTimestamp
 
 console.log(currentEvent);
-    redis.hmset(Data.eventID, currentEvent).then(function (result) {
+    redis.hmset(Data.eventObj.rediskey, currentEvent).then(function (result) {
       if (result == "OK") {
-        redis.hgetall(Data.eventID).then(function (result) {
+        redis.hgetall(Data.eventObj.rediskey).then(function (result) {
           if (result.status != 'published') {
             pub = new ioredis();
             pub.publish('customerNotifications', JSON.stringify({
@@ -167,7 +167,7 @@ console.log(currentEvent);
               message: "Event Updated",
               redis: {
                 type: "hash",
-                key: Data.eventID,
+                key: Data.eventObj.rediskey,
                 data: result
               }
             }));
@@ -183,7 +183,7 @@ console.log(currentEvent);
               }
               if (results.length > 0) {
                 for (var i = 0; i < results.length; i++) {
-                  if (JSON.parse(results[i]).rediskey == Data.eventID) {
+                  if (JSON.parse(results[i]).rediskey == Data.eventObj.rediskey) {
                     updatePublcEvents(results[i], JSON.stringify(currentEvent))
                   }
                 }
