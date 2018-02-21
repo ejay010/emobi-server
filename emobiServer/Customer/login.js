@@ -287,7 +287,15 @@ function cancelEvent(req, res, error) {
         redis.smembers('PublicEvents').then(results => {
           for (var i = 0; i < results.length; i++) {
             if (JSON.parse(results[i]).rediskey == currentEvent.rediskey) {
-              redis.srem('PublicEvents', results[i])
+              redis.srem('PublicEvents', results[i]).then((response) => {
+                if (response) {
+                  res.send({
+                    success: true,
+                    message: "Event Canceled",
+                    data: results[i]
+                  })
+                }
+              })
             }
           }
         })
