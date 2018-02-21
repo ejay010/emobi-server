@@ -136,6 +136,7 @@ function createEvent(req, res) {
 
 function editEvent(req, res, err) {
   let Data = JSON.parse(req.body.seedData);
+  console.log(Data);
   if (req.file != null) {
     fs.rename(req.file.path, req.file.path+'-'+req.file.originalname, function (error) {
       if (error) {
@@ -151,6 +152,8 @@ function editEvent(req, res, err) {
     currentEvent.description = Data.eventDescription
     currentEvent.title = Data.eventTitle
     currentEvent.flyer = JSON.stringify(req.file)
+    currentEvent.startTime = Data.startTimestamp
+    currentEvent.finishTime = Data.finishTimestamp
 
     redis.hmset(Data.eventID, currentEvent).then(function (result) {
       if (result == "OK") {
