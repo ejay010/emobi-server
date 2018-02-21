@@ -294,17 +294,18 @@ function cancelEvent(req, res, error) {
                     message: "Event Canceled",
                     data: results[i]
                   })
+                } else {
+                  res.send({
+                    success: false,
+                    message: "Event Not Canceled",
+                    error: error
+                  })
                 }
               })
             }
           }
         })
-        res.send({
-          success: false,
-          message: "Event Not Canceled",
-          error: error
-        })
-      }
+        }
     })
   })
 }
