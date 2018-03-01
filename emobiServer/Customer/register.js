@@ -1,9 +1,8 @@
 const ioredis = require('ioredis');
 const bcrypt = require('bcrypt');
-const CustomerClass = require('../Customer/CustomerClass.js');
+const CustomerClass = require('./Customer.js');
 
-function register(app) {
-  app.post('/customerRegister', (req, res) => {
+function register(req, res) {
 
     const saltRounds = 10
     const myPlaintextPassword = req.body.password
@@ -37,7 +36,6 @@ function register(app) {
         })
       }
     })
-  });
 }
 
 module.exports = register;

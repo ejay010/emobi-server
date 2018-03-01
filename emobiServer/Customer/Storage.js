@@ -11,6 +11,17 @@ function StorageClass() {
     return this.redis.get('customer:'+customerClass.email);
   };
 
+  this.GetCustomerEvents = (customerClass) => {
+    return this.redis.smembers(customerClass.email+':events');
+  }
+
+  this.GetCustomerSettings = (customerClass) => {
+    return this.redis.hmget(customerClass.email+':settings');
+  }
+
+  this.SetCustomerSettings = (customerClass, settingsObj) => {
+    return this.redis.hmset(customerClass.email+':settings', settingsObj)
+  }
 //Should always resolve to false
   this.FalsePromise = () => {return new Promise((resolve, reject) => {
       resolve(false)

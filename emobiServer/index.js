@@ -42,10 +42,10 @@ app.use(passport.initialize());
 app.use(passport.session())
 app.use(express.static('flyers'))
 
-require('./Authentication').init(app);
-require('./Customer').init(app);
-require('./Events').init(app);
-require('./Registration').init(app);
+require('./Bootstrap').init(app);
+// require('./Customer').init(app);
+// require('./Events').init(app);
+// require('./Registration').init(app);
 
 server.listen(3000, (err) => {
   if (err) {

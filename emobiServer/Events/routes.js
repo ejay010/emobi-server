@@ -1,27 +1,12 @@
-const ioredis = require('ioredis');
+const multer = require('multer');
+const upload = multer({ dest: 'flyers/'})
 
-function init(app) {
-  app.get('/events', getEvents)
-}
-
-function getEvents(req, res, error) {
-  let redis = new ioredis()
-  redis.smembers('PublicEvents').then(response => {
-    if (response.length > 0) {
-      for (var i = 0; i < response.length; i++) {
-        response[i] = JSON.parse(response[i])
-      }
-    }
-    res.send({
-      success: true,
-      data: response
-    })
-  }).catch(e => {
-    res.send({
-      success: false,
-      error: e
-    })
-  })
+function init(app, passport) {
+  app.post('/createEvent', passport.authenticationMiddleware(), require('./create.js'))
+  app.get('/events/:eventId/publish', passport.authenticationMiddleware(), require('./publish.js'))
+  app.get('/events/:eventId/cancel', passport.authenticationMiddleware(), require('./cancel.js'))
+  app.get('/events/:eventId/delete', passport.authenticationMiddleware(), require('./delete.js'))
+  app.post('/events/:eventId/edit', passport.authenticationMiddleware(), upload.single('flyer') ,require('./edit.js'))
 }
 
 module.exports = init

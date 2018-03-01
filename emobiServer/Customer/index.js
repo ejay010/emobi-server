@@ -1,3 +1,4 @@
 module.exports = {
-  init: require('./login')
-};
+  init: require('./routes.js'),
+  Class: require('./Customer.js')
+}
