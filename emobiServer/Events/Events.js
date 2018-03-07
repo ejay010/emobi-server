@@ -19,7 +19,7 @@ function Events() {
       let currentEvent = response
       let newEventData = updatedData
       let DB = new Storage()
-      return DB.Update(redisKey, updatedData).then((response) => {
+      return DB.Update(redisKey, newEventData).then((response) => {
         return response
       })
     })
@@ -36,8 +36,9 @@ function Events() {
       response.status = 'published'
       return this.Update(response.rediskey, response).then((response) => {
         if (response == 'OK') {
-          return this.GetEvent(response.rediskey).then((response) => {
+          return this.GetEvent(redisKey).then((response) => {
             let currentEvent = response
+            console.log(currentEvent);
             return DB.redis.sadd('PublicEvents', currentEvent.rediskey).then((results) => {
               if (response) {
                 return {success: true, data: currentEvent}
@@ -57,7 +58,7 @@ function Events() {
       currentEvent.status = 'unpublished'
       return this.Update(currentEvent.rediskey, currentEvent).then((response) => {
         if (response = 'OK') {
-          return this.GetEvent(currentEvent.rediskey).then((updatedEvent) => {
+          return this.GetEvent(rediskey).then((updatedEvent) => {
             return DB.redis.srem('PublicEvents', updatedEvent.rediskey).then((results) => {
               if (response) {
                 return {success: true, data: updatedEvent}

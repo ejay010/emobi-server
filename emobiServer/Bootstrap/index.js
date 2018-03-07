@@ -8,11 +8,13 @@ const passport = require('passport');
 // const moment = require('moment');
 const customer = require('../Customer');
 const events = require('../Events');
+const tickets = require('../Tickets');
 
 function init(app) {
   authentication.init(app);
   customer.init(app, passport)
   events.init(app, passport)
+  tickets.init(app, passport)
   // tickets(app, passport)
 }
 

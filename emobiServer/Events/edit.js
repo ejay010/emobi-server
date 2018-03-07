@@ -11,9 +11,9 @@ function EditEvent(req, res) {
       }
     })
   }
-
-  eventsClass.GetEvent(Data.eventObj.redisKey).then((response) => {
+  eventsClass.GetEvent(Data.eventObj.rediskey).then((response) => {
     let temp = response
+    response.category = Data.eventObj.category
       response.description = Data.eventObj.description
       response.title = Data.eventObj.title
       response.flyer = JSON.stringify(req.file)
@@ -21,7 +21,7 @@ function EditEvent(req, res) {
       response.finishTime = Data.finishTimestamp
       let newEvent = response
 
-      eventsClass.Update(response.redisKey, response).then((response) => {
+      eventsClass.Update(response.rediskey, response).then((response) => {
         if (response == "OK") {
 
           eventsClass.Storage.redis.publish('customerNotifications', JSON.stringify({
