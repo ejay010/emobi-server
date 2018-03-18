@@ -10,6 +10,7 @@ function create(req, res) {
     eventType: req.body.eventSeeds.eventType,
     category: req.body.eventSeeds.eventPurpose,
   }
+  console.log(seedData.eventType);
   Events.create(seedData).then((response) => {
     redis.publish('customerNotifications', JSON.stringify({
       from: "server",

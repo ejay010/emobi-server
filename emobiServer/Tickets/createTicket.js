@@ -1,6 +1,7 @@
 const Tickets = require('./tickets-mongo.js');
 const fs = require('fs');
 const EventClass = require('../Events').Class;
+const ioredis = require('ioredis');
 
 function createTicket(req, res, error) {
   if (req.file != null) {
@@ -22,10 +23,21 @@ Tickets.create(customerData).then((createdTicket) => {
       currentTickets.push(createdTicket.id)
       customerEvent.ticketKeys = currentTickets
       customerEvent.save().then((response) => {
+        let redis = new ioredis()
+        redis.publish('customerNotifications', JSON.stringify({
+          from: "server",
+          to: response.publisher,
+          message: "Ticket Created",
+          redis: {
+            type: "hash",
+            key: createTicket.id,
+            data: createdTicket
+          }
+        }))
         res.send({
           success: true,
           message: "Ticket Created",
-          data: response
+          data: createdTicket
         })
       })
     })
