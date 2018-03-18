@@ -5,6 +5,7 @@ const session = require('express-session');
 const fs = require('fs');
 const multer = require('multer');
 const path = require('path');
+const mongoose = require('mongoose');
 const cors = require('cors');
 const ioredis = require('ioredis');
 const RedisStore = require('connect-redis')(session);
@@ -13,6 +14,12 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 
 let redis = new ioredis();
+let mongoDB = 'mongodb://localhost/emobi'
+mongoose.connect(mongoDB)
+mongoose.Promise = global.Promise
+
+let db = mongoose.connection
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 io.on('connection', function (socket) {
   let socketRedis = new ioredis();

@@ -1,22 +1,28 @@
 const passport = require('passport')
 const bcrypt = require('bcrypt')
 const LocalStrategy = require('passport-local').Strategy
-const ioredis = require('ioredis');
+const mongoose = require('mongoose');
+const Customer = require('../Customer').Class;
 
 const authenticationMiddleware = require('./middleware')
 
 function findUser (email, callback) {
-  console.log(email);
-  let redis = new ioredis();
-  redis.get('customer:'+email).then((result) => {
-    if (result != null) {
-      customer = JSON.parse(result);
-      if (email === customer.email) {
-          return callback(null, customer)
-      }
+  Customer.findOne({'email': email}).then((response) => {
+    if (response) {
+      return callback(null, response)
     }
     return callback(null)
   })
+  // let redis = new ioredis();
+  // redis.get('customer:'+email).then((result) => {
+  //   if (result != null) {
+  //     customer = JSON.parse(result);
+  //     if (email === customer.email) {
+  //         return callback(null, customer)
+  //     }
+  //   }
+  //   return callback(null)
+  // })
 }
 
 passport.serializeUser(function (user, cb) {
@@ -25,7 +31,6 @@ passport.serializeUser(function (user, cb) {
 })
 
 passport.deserializeUser(function (email, cb) {
-  console.log(email)
   findUser(email, cb)
 })
 
@@ -42,7 +47,6 @@ function initPassport () {
 
         // User not found
         if (!user) {
-          console.log('User not found')
           return done(null, false)
         }
         // console.log(user);
