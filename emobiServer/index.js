@@ -10,7 +10,7 @@ const cors = require('cors');
 const ioredis = require('ioredis');
 const RedisStore = require('connect-redis')(session);
 const app = express();
-if (process.env.production) {
+if (process.env.PRODUCTION) {
   let options = {
       key: fs.readFileSync('/etc/nginx/ssl/api.e-mobie.com/324318/server.key'),
       cert: fs.readFileSync('/etc/nginx/ssl/api.e-mobie.com/324318/server.cert')
