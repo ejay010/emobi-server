@@ -16,10 +16,12 @@ if (process.env.PRODUCTION) {
       cert: fs.readFileSync('/etc/nginx/ssl/api.e-mobie.com/324318/server.crt')
   };
   const server = require('https').createServer(options, app);
+  const io = require('socket.io')(server);
 } else {
   const server = require('http').createServer(app);
+  const io = require('socket.io')(server);
+
 }
-const io = require('socket.io')(server);
 
 let redis = new ioredis();
 let mongoDB = 'mongodb://localhost/emobi'
