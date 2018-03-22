@@ -22,44 +22,61 @@ function purchaseTicket(req, res, error) {
             eventId: updatedTickect.eventId,
             ticketId: updatedTickect.id,
             purchaser: purchaseInfo.purchaser,
-            resolved_qty: purchaseInfo.qty
-          }).then((createdPO) => {
-            let redis = new ioredis()
-            redis.publish('customerNotifications', JSON.stringify({
-              from: "server",
-              to: createdPO.publisher,
-              message: "Tickets Bought",
-              redis: {
-                type: "hash",
-                key: createdPO.id,
-                data:{
-                  PurchaseOrder: createdPO,
-                  TicketInfo: updatedTickect
+            resolved_qty: purchaseInfo.qty,
+            qty_available: purchaseInfo.qty
+          }).then((response) => {
+            response.populate('eventId').populate('ticketId').execPopulate().then((createdPO) => {
+              let redis = new ioredis()
+              redis.publish('customerNotifications', JSON.stringify({
+                from: "server",
+                to: createdPO.purchaser,
+                message: "Ticket Bought",
+                redis: {
+                  type: "hash",
+                  key: createdPO.id,
+                  data:{
+                    PurchaseOrder: createdPO,
+                    TicketInfo: updatedTickect
+                  }
                 }
-              }
-            }))
+              }))
 
-            redis.publish('customerNotifications', JSON.stringify({
-              from: "server",
-              to: foundTicket.publisher,
-              message: "Ticket Sale",
-              redis: {
-                type: "hash",
-                key: createdPO.id,
+              redis.publish('customerNotifications', JSON.stringify({
+                from: "server",
+                to: foundTicket.publisher,
+                message: "Ticket Sale",
+                redis: {
+                  type: "hash",
+                  key: createdPO.id,
+                  data: {
+                    PurchaseOrder: createdPO,
+                    TicketInfo: updatedTickect
+                  }
+                }
+              }))
+
+
+              redis.publish('customerNotifications', JSON.stringify({
+                from: "server",
+                to: "all",
+                message: "Ticket Sold",
+                redis: {
+                  type: "hash",
+                  key: updatedTickect.id,
+                  data: {
+                    TicketInfo: updatedTickect
+                  }
+                }
+              }))
+
+              res.send({
+                success: true,
+                message: 'Purchase Complete',
                 data: {
                   PurchaseOrder: createdPO,
                   TicketInfo: updatedTickect
                 }
-              }
-            }))
-
-            res.send({
-              success: true,
-              message: 'Purchase Complete',
-              data: {
-                PurchaseOrder: createdPO,
-                TicketInfo: updatedTickect
-              }
+              })
             })
           })
         })
