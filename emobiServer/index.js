@@ -13,7 +13,7 @@ const app = express();
 if (process.env.PRODUCTION) {
   let options = {
       key: fs.readFileSync('/etc/nginx/ssl/api.e-mobie.com/324318/server.key'),
-      cert: fs.readFileSync('/etc/nginx/ssl/api.e-mobie.com/324318/server.cert')
+      cert: fs.readFileSync('/etc/nginx/ssl/api.e-mobie.com/324318/server.crt')
   };
   const server = require('https').createServer(options, app);
 } else {
