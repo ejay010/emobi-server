@@ -1,5 +1,5 @@
 const Tickets = require('./tickets-mongo.js');
-const PurchaseOrders = require('../PurchaseOrders');
+const PurchaseOrders = require('../PurchaseOrders').Class;
 const ioredis = require('ioredis');
 
 function purchaseTicket(req, res, error) {
