@@ -48,7 +48,7 @@ function ProcessPurchase(req, res, error) {
         success: false,
         message: "Redemption Error",
         error: {
-          message: "Improper Redemption"
+          message: "Redemption Error, Wrong Ticket"
         }
       })
     }
