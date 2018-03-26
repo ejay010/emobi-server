@@ -53,7 +53,7 @@ function ProcessPurchase(req, res, error) {
       } else {
         res.send({
           success: false,
-          message: "Tickets Exhausted"
+          message: "Tickets Exhausted",
           data: result
         })
       }
