@@ -6,6 +6,7 @@ let EventsSchema = mongoose.Schema({
   eventType: String,
   description: String,
 finishTime: String,
+location: String,
   // finishTime: Date,
   status: {type: String, default: 'unpublished'},
   publisher: String,

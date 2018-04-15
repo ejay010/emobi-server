@@ -16,11 +16,12 @@ function EditEvent(req, res) {
     events.category = Data.eventObj.category
     events.description = Data.eventObj.description
     events.title = Data.eventObj.title
-    // FIXME: Flyer objec needs to be created or change it to a string and parse it, maybe use string for now and then update to object strings later
-// FIXME: same goes for start and finish times
-    events.flyer = JSON.stringify(req.file)
+    if (req.file != null) {
+      events.flyer = JSON.stringify(req.file)
+    }
     events.startTime = Data.startTimestamp
     events.finishTime = Data.finishTimestamp
+    events.location = Data.location
 
     events.save().then((response) => {
       if (response.status == 'published') {
