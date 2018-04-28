@@ -11,12 +11,12 @@ const ioredis = require('ioredis');
 const RedisStore = require('connect-redis')(session);
 const app = express();
 
-// let options = {
-//     key: fs.readFileSync('/etc/nginx/ssl/api.e-mobie.com/324318/server.key'),
-//     cert: fs.readFileSync('/etc/nginx/ssl/api.e-mobie.com/324318/server.crt')
-// };
-// const server = require('https').createServer(options, app);
-const server = require('http').createServer(app);
+let options = {
+    key: fs.readFileSync('/etc/nginx/ssl/api.e-mobie.com/324318/server.key'),
+    cert: fs.readFileSync('/etc/nginx/ssl/api.e-mobie.com/324318/server.crt')
+};
+const server = require('https').createServer(options, app);
+// const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 
 let redis = new ioredis();
