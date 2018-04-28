@@ -1,7 +1,43 @@
-const Events = require('./Events.js');
+const Events = require('./Events-mongo.js');
+const ioredis = require('ioredis');
+
 function DeleteEvent(req, res) {
-  let eventsClass = new Events()
-  console.log(req.user);
+  Events.remove({'_id': req.params.eventId}).then((error) => {
+    if (error.ok) {
+      let redis = new ioredis()
+      // redis.publish('customerNotifications', JSON.stringify({
+      //             from: "server",
+      //             to: req.user.email,
+      //             message: "Event Deleted",
+      //             redis: {
+      //               type: "hash",
+      //               key: req.params.eventId,
+      //             }
+      //           }));
+
+                redis.publish('customerNotifications', JSON.stringify({
+                            from: "server",
+                            to: "all",
+                            message: "Event Deleted",
+                            redis: {
+                              type: "hash",
+                              key: req.params.eventId,
+                            }
+                          }));
+
+      res.send({
+        success: true,
+        message: 'Event Deleted',
+        data: {
+          _id: req.params.eventId
+        }
+      })
+    } else {
+      res.send({
+        error
+      })
+    }
+  })
 }
 
 module.exports = DeleteEvent

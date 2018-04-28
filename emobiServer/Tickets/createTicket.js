@@ -19,9 +19,9 @@ function createTicket(req, res, error) {
 Tickets.create(customerData).then((createdTicket) => {
   if (createdTicket) {
     EventClass.findById(createdTicket.eventId).then((customerEvent) => {
-      let currentTickets = customerEvent.ticketKeys
+      let currentTickets = customerEvent.tickets
       currentTickets.push(createdTicket.id)
-      customerEvent.ticketKeys = currentTickets
+      customerEvent.tickets = currentTickets
       customerEvent.save().then((response) => {
         let redis = new ioredis()
         redis.publish('customerNotifications', JSON.stringify({
@@ -34,26 +34,33 @@ Tickets.create(customerData).then((createdTicket) => {
             data: createdTicket
           }
         }))
-        res.send({
-          success: true,
-          message: "Ticket Created",
-          data: createdTicket
-        })
+        if (customerEvent.status == 'published') {
+          EventClass.findById(response._id).populate('tickets').then((results) => {
+            console.log(results);
+            redis.publish('eventViewNotification', JSON.stringify({
+              from: 'server',
+              to: customerEvent._id,
+              message: "Event Updated",
+              data: results
+            }))
+            res.send({
+              success: true,
+              message: "Ticket Created",
+              data: createdTicket
+            })
+          })
+        } else {
+          res.send({
+            success: true,
+            message: "Ticket Created",
+            data: createdTicket
+          })
+        }
       })
     })
   }
 })
 
-  // let tickets = new Tickets()
-  // let customerData = JSON.parse(req.body.seedData)
-  // customerData.eventId = req.params.eventId
-  // customerData.ticket_image = JSON.stringify(req.file)
-  // let events = new EventClass()
-  // events.GetEvent(customerData.eventId).then((response) => {
-  //   tickets.CreateTicket(response, customerData).then((response) => {
-  //     res.send(response)
-  //   })
-  // })
 }
 
 module.exports = createTicket

@@ -9,6 +9,9 @@ function init(app, passport) {
   app.get('/events/:eventId/delete', passport.authenticationMiddleware(), require('./delete.js'))
   app.post('/events/:eventId/edit', passport.authenticationMiddleware(), upload.single('flyer') ,require('./edit-mongo.js'))
   app.get('/publicEvent/:email/:eventkey', require('./publicEvents.js'))
+  app.get('/events/:eventId/ticket/:ticketId/deleteTicket', passport.authenticationMiddleware(), require('./Delete_ticket.js'))
+  // app.get('/events/:eventId/ticket/:ticketId/deleteTicket', require('./Delete_ticket.js'))
+
 }
 
 module.exports = init

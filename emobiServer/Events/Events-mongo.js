@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 let EventsSchema = mongoose.Schema({
   title: String,
-  ticketKeys: Array,
+  tickets: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tickets'}],
   eventType: String,
   description: String,
 finishTime: String,

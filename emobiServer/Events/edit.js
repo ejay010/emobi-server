@@ -34,6 +34,7 @@ function EditEvent(req, res) {
                         data: newEvent
                       }
                     }));
+
                     if (newEvent.status == 'published') {
                       eventsClass.Storage.redis.publish('customerNotifications', JSON.stringify({
                                   from: "server",
