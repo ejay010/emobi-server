@@ -30,6 +30,10 @@ function deleteTicket(req, res, error) {
                   subject_event.tickets = current_tickets
                   Events.findByIdAndUpdate(req.params.eventId, subject_event).exec()
 
+                  redis.publish('ticket-update', JSON.stringify({
+                    message: "Ticket Deleted",
+                    ticket: removed
+                  }))
         res.send({
           success: true,
           message: "Ticket Deleted",

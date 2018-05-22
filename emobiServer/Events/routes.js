@@ -12,6 +12,8 @@ function init(app, passport) {
   app.get('/events/:eventId/ticket/:ticketId/deleteTicket', passport.authenticationMiddleware(), require('./Delete_ticket.js'))
   // app.get('/events/:eventId/ticket/:ticketId/deleteTicket', require('./Delete_ticket.js'))
 
+  app.get('/:email/events', require('./CustomerEvents.js'))
+
 }
 
 module.exports = init

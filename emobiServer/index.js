@@ -28,10 +28,16 @@ let db = mongoose.connection
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 io.on('connection', function (socket) {
-  let socketRedis = new ioredis();
-  socketRedis.subscribe('customerNotifications')
-  socketRedis.on('message', function (channel, message) {
+  let frontendRedis = new ioredis();
+  frontendRedis.subscribe('customerNotifications')
+  frontendRedis.on('message', function (channel, message) {
     socket.emit('customerNotifications',  JSON.parse(message))
+  })
+
+  let ticketRedis = new ioredis();
+  ticketRedis.subscribe('ticket-update')
+  ticketRedis.on('message', function (channel, message) {
+    socket.emit('ticketUpdate', JSON.parse(message))
   })
 })
 

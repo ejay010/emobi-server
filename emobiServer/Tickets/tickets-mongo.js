@@ -7,7 +7,8 @@ let TicketSchema = mongoose.Schema({
   quantity_available: Number,
   eventId: mongoose.Schema.ObjectId,
   publisher: String,
-  paid_or_free: String
+  paid_or_free: String,
+  price: {type: Number, default: 0}
 })
 
 let Ticket = mongoose.model('Tickets', TicketSchema)
