@@ -13,7 +13,14 @@ function processPurchase(req, res, error) {
       }
       let total_passes = req.body.stubs.length
       let guest_passes = req.body.stubs.filter(obj => obj.guest_spot == true)
+      guest_passes.forEach((pass) => {
+        pass.outstanding = true
+      })
+
       let rsvp = req.body.stubs.filter(obj => obj.guest_spot == false)
+      rsvp.forEach((pass) => {
+        pass.outstanding = true
+      })
 
       if ((foundTicket.quantity_available - total_passes) >= 0) {
         let tempQtyAvail = foundTicket.quantity_available
