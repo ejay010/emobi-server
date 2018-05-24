@@ -3,7 +3,7 @@ function UpdateInvoice(req, res, error) {
   Invoice.findById(req.params.purchaseOrderId).then((result) => {
     //will recieve guest list with updated status
 
-    let new_guestlist = req.body.guestlist
+    let new_guestlist = req.body.GuestList
     let current_guestlist = result.contents
 
     //sanity check
