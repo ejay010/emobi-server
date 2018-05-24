@@ -2,7 +2,7 @@ const Invoice = require('./PurchaseOrderModel.js');
 function UpdateInvoice(req, res, error) {
   Invoice.findById(req.params.purchaseOrderId).then((result) => {
     //will recieve guest list with updated status
-
+    console.log(result);
     let new_guestlist = req.body.GuestList
     let current_guestlist = result.contents
 
