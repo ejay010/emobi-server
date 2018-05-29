@@ -42,22 +42,24 @@ function processPurchase(req, res, error) {
             ticketId: req.body.ticketId,
             guest_passes: guest_passes
           }).then((response) => {
-            //notify app of sale
-            let redis = new ioredis
-            redis.publish('customerNotifications', JSON.stringify({
-              from: "server",
-              to: "all",
-              message: "Ticket Sale",
-              sale: {
-                eventId: response.eventId,
-                ticketId: response.ticketId,
-                qty: response.invoice_life
-              }
-            }))
-            //send data back to customer to update their state
-            res.send({
-              success: true,
-              data: response
+            PurchaseOrder.findById(response._id).populate('eventId').populate('ticketId').then((response) => {
+              //notify app of sale
+              let redis = new ioredis
+              redis.publish('customerNotifications', JSON.stringify({
+                from: "server",
+                to: "all",
+                message: "Ticket Sale",
+                sale: {
+                  eventId: response.eventId._id,
+                  ticketId: response.ticketId._id,
+                  qty: response.invoice_life
+                }
+              }))
+              //send data back to customer to update their state
+              res.send({
+                success: true,
+                data: response
+              })
             })
           })
 

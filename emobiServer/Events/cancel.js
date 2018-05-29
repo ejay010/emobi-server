@@ -3,7 +3,7 @@ const ioredis = require('ioredis');
 
 function CancelEvent(req, res) {
   let redis = new ioredis()
-  Events.findById(req.params.eventId).then((response) => {
+  Events.findById(req.params.eventId).populate('tickets').then((response) => {
     if (response) {
       response.status = 'unpublished'
       response.save().then((response) => {

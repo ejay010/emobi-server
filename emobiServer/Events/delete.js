@@ -5,16 +5,7 @@ function DeleteEvent(req, res) {
   Events.remove({'_id': req.params.eventId}).then((error) => {
     if (error.ok) {
       let redis = new ioredis()
-      // redis.publish('customerNotifications', JSON.stringify({
-      //             from: "server",
-      //             to: req.user.email,
-      //             message: "Event Deleted",
-      //             redis: {
-      //               type: "hash",
-      //               key: req.params.eventId,
-      //             }
-      //           }));
-
+      
                 redis.publish('customerNotifications', JSON.stringify({
                             from: "server",
                             to: "all",

@@ -3,7 +3,7 @@ const Storage = require('./Storage.js');
 const ioredis = require('ioredis');
 function PublishEvent(req, res) {
 
-  Events.findById(req.params.eventId).then((response) => {
+  Events.findById(req.params.eventId).populate('tickets').then((response) => {
     if (response) {
       let current = response
       let redis = new ioredis()

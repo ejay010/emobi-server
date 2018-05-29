@@ -8,7 +8,11 @@ function Login(req, res) {
       res.send({
         message: "Welcome",
         success: true,
-        user: req.user,
+        user: {
+          dob: req.user.dob,
+          email: req.user.email,
+          username: req.user.username
+        },
         userEvents: response
       })
     }

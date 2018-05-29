@@ -3,7 +3,7 @@ const ioredis = require('ioredis');
 
 function create(req, res) {
   let redis = new ioredis()
-
+console.log(req.body);
   let seedData = {
     title: req.body.eventSeeds.eventName,
     publisher: req.body.user.email,
