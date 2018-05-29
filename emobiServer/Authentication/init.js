@@ -8,21 +8,12 @@ const authenticationMiddleware = require('./middleware')
 
 function findUser (email, callback) {
   Customer.findOne({'email': email}).then((response) => {
-    if (response) {
-      return callback(null, response)
-    }
-    return callback(null)
+    return callback(null, response);
+    // if (response) {
+    //   return callback(null, response)
+    // }
+    // return callback(null)
   })
-  // let redis = new ioredis();
-  // redis.get('customer:'+email).then((result) => {
-  //   if (result != null) {
-  //     customer = JSON.parse(result);
-  //     if (email === customer.email) {
-  //         return callback(null, customer)
-  //     }
-  //   }
-  //   return callback(null)
-  // })
 }
 
 passport.serializeUser(function (user, cb) {
