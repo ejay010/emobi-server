@@ -3,7 +3,9 @@ let CustomerSchema = mongoose.Schema({
   email: String,
   password: String,
   dob: String,
-  username: String
+  username: String,
+  status: String,
+  ProfilePic: String
 })
 let Customer = mongoose.model('Customer', CustomerSchema)
 

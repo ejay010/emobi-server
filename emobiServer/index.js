@@ -60,11 +60,9 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session())
 app.use(express.static('flyers'))
+app.use(express.static('profile_pics'))
 
 require('./Bootstrap').init(app);
-// require('./Customer').init(app);
-// require('./Events').init(app);
-// require('./Registration').init(app);
 
 server.listen(3000, (err) => {
   if (err) {
