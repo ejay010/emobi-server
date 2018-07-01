@@ -3,8 +3,8 @@ const fs = require('fs');
 const dot = require('dot');
 
 function mail(req, res, error) {
-  let api_key = 'key-46b61d449abe191f4b14418e547705b8';
-  let DOMAIN = 'sandbox754e87877afd499b84136ac59b324a0a.mailgun.org'
+  let api_key = process.env.MAILGUN_API_KEY;
+  let DOMAIN = process.env.MAILGUN_API_DOMAIN;
   let mailgun = require('mailgun-js')({
     apiKey: api_key,
     domain: DOMAIN
