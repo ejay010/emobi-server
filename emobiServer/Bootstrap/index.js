@@ -1,15 +1,10 @@
 const authentication = require('../Authentication');
-// const bluebird = require('bluebird');
-// const ioredis = require('ioredis');
 const passport = require('passport');
-// const multer = require('multer');
-// const fs = require('fs');
-// const upload = multer({ dest: 'flyers/'})
-// const moment = require('moment');
 const customer = require('../Customer');
 const events = require('../Events');
 const tickets = require('../Tickets');
 const PurchaseOrders = require('../PurchaseOrders');
+const Mail = require('../MailGun');
 
 function init(app) {
   authentication.init(app);
@@ -17,7 +12,7 @@ function init(app) {
   events.init(app, passport)
   tickets.init(app, passport)
   PurchaseOrders.init(app, passport)
-  // tickets(app, passport)
+  Mail.init(app, passport)
 }
 
 module.exports = {init: init}
