@@ -9,6 +9,7 @@ function routes(app, passport) {
   app.get('/tickets/:eventId/view/:ticketId', require('./viewTicket.js'))
   app.get('/tickets/:eventId/fetch', require('./LoadTickets.js'))
   app.get('/tickets/:customer/tickets',  require('./CustomerTickets.js'))
+  app.get('/tickets/qrCode/:eventId/:invoiceId', require('./QrGenerator.js'))
 }
 
 module.exports = routes

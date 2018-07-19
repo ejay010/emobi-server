@@ -46,14 +46,14 @@ Tickets.create(customerData).then((createdTicket) => {
             res.send({
               success: true,
               message: "Ticket Created",
-              data: createdTicket
+              data: results
             })
           })
         } else {
           res.send({
             success: true,
             message: "Ticket Created",
-            data: createdTicket
+            data: results
           })
         }
       })

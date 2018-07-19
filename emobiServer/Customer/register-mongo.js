@@ -1,6 +1,10 @@
 const ioredis = require('ioredis');
 const bcrypt = require('bcrypt');
 const CustomerClass = require('./Customer-mongo.js');
+const Emails = require('../Emails');
+const fs = require('fs');
+const MailGun = require('../MailGun');
+const dot = require('dot');
 
 function register(req, res) {
     const saltRounds = 10
@@ -18,14 +22,21 @@ function register(req, res) {
     CustomerClass.findOne({'email': new_customer.email}).then((response) => {
       if (response == null) {
         CustomerClass.create(new_customer).then((response) => {
-          res.send({
-            success: true,
-            message: 'Customer Created',
-            user: {
-              username: response.username,
-              email: response.email,
-              dob: response.dob
-            }
+          // Emails.Welcome(response);
+          fs.readFile(__dirname +'/../Emails/Templates/welcome.html', 'utf8', function (error, htmlresponse) {
+            let templateFunction = dot.template(htmlresponse)
+
+            MailGun.Sendto(response.email, "Welcome to E-Mobie", templateFunction(response))
+
+            res.send({
+              success: true,
+              message: 'Customer Created',
+              user: {
+                username: response.username,
+                email: response.email,
+                dob: response.dob
+              }
+            })
           })
         })
       } else {

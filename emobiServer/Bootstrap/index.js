@@ -12,7 +12,7 @@ function init(app) {
   events.init(app, passport)
   tickets.init(app, passport)
   PurchaseOrders.init(app, passport)
-  Mail.init(app, passport)
+  // Mail.init(app, passport)
 }
 
 module.exports = {init: init}
