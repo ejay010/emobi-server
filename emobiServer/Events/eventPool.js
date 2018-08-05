@@ -3,7 +3,7 @@ const Events = require('./Events-mongo.js');
 function eventPool(req, res, error) {
   let eventsClass = new Events()
 
-  Events.find({status: 'published'}).then((response) => {
+  Events.find({status: 'published'}).populate('tickets').then((response) => {
     res.send(response)
   })
   //

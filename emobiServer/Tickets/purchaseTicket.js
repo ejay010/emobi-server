@@ -16,7 +16,15 @@ function sendEmailConfirmation(invoiceObj, callback) {
       // console.log(invoiceObj);
       let templateFunction = dot.template(rawEmail)
       let parsedEmail = templateFunction(invoiceObj)
-
+      let qrCode = ''
+      let qrURL = "?eventId=" + invoiceObj.eventId + "&invoiceId=" + invoiceObj._id + "&isPurchaser=true"
+      new awesomeQR().create({
+        text: qrURL,
+        size: 350,
+        callback: (data) => {
+          qrCode = data
+        }
+      })
       // load mailgun
       let api_key = process.env.MAILGUN_API_KEY;
       let DOMAIN = process.env.MAILGUN_API_DOMAIN;
@@ -24,12 +32,14 @@ function sendEmailConfirmation(invoiceObj, callback) {
         apiKey: api_key,
         domain: DOMAIN
       })
+      let attach = new mailgun.Attachment({data: qrCode, filename: 'qrCode.png', contentType: 'image/png'})
 
       let emailMeta = {
         from: 'Excited User <me@samples.mailgun.org>',
         to: invoiceObj.purchaser,
         subject: 'Your recent E-Mobie Purchase',
-        html: parsedEmail
+        html: parsedEmail,
+        inline: attach
       }
 
       //fire mail gun
@@ -84,9 +94,8 @@ function processPurchase(req, res, error) {
             //notify customer via email
 
                   // create awesome qr data link
-                  let qrURL = req.headers.host + '/tickets/qrCode/'+response.eventId+'/'+response._id
                   //parse to string
-                  response.qrData = qrURL
+                  // response.qrData = qrURL
             sendEmailConfirmation(response, function (error, body) {
               // IDEA: Do some meta data logging here.
               // IDEA: Change this function to a promise.
