@@ -1,6 +1,6 @@
 const Invoice = require('./PurchaseOrderModel.js');
 function UpdateInvoice(req, res, error) {
-  Invoice.findById(req.params.purchaseOrderId).then((result) => {
+  Invoice.findById(req.params.purchaseOrderId).then((result, error) => {
     //will recieve guest list with updated status
     let new_guestlist = req.body.GuestList
     let current_guestlist = result.contents
@@ -22,6 +22,14 @@ function UpdateInvoice(req, res, error) {
                 // person has arrived update, document record
                 changeCount += 1
                 result.contents[spot_index].outstanding = spot.outstanding // This line updates the document's record
+                result.markModified('contents')
+                // Since we have rsvp list
+                result.rsvp_list.forEach((rsvp) => {
+                  if (rsvp.email == spot.email) {
+                    rsvp.outstanding = false
+                  }
+                })
+                result.markModified('rsvp_list')
               }
             }
           }
@@ -29,24 +37,29 @@ function UpdateInvoice(req, res, error) {
           if ((spot.outstanding == false) && (current_guestlist[spot_index].outstanding == true)) {
             changeCount += 1
             result.contents[spot_index].outstanding = spot.outstanding // this is for guest spots
+            result.markModified('contents')
+            let usedGuestPasses = 0
+
+            for (var i = 0; i < result.guest_passes.length; i++) {
+              if (usedGuestPasses <= 0) {
+                result.guest_passes[i].outstanding = false
+                usedGuestPasses += 1
+              }
+            }
+            result.markModified('guest_passes')
           }
         }
       }) // end of foreach scan
-      if (changeCount > 0) {
-        result.save().then((response) => {
-          res.send({
-            success: true,
-            message: "Invoice Updated",
-            invoice: response
-          })
-        })
-      } else {
+      // res.send({count: changeCount})
+      console.log(result);
+
+      result.save().then((updatedItem) => {
         res.send({
           success: true,
-          message: "Nothing Changed",
-          invoice: result
+          message: "Invoice Updated",
+          invoice: updatedItem
         })
-      }
+      })
     }
 
   })
