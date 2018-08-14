@@ -12,7 +12,7 @@ let MailGun = {
       })
 
     return mailgunApi.messages().send({
-      from: 'E-MOBiE Support<support@e-mobie.com>',
+      from: 'E-MOBiE Support<support@mg.e-mobie.com>',
       to: to,
       subject: subject,
       html: template
