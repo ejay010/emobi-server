@@ -10,6 +10,8 @@ function ResetPassword(req, res, error) {
       // verify token link to correct Customer
       Customer.findById(Token.customer_id).then((Customer) => {
         if (Customer != null) {
+          PasswordReset.findByIdAndDelete(Token._id).exec()
+
           // Hash the new password and set it
           const saltRounds = 10
           const myPlaintextPassword = req.body.new_password
@@ -26,7 +28,6 @@ function ResetPassword(req, res, error) {
               }
             })
           })
-          PasswordReset.findByIdAndDelete(req.body.token).exec()
         }
       })
     } else {
