@@ -35,7 +35,7 @@ function sendEmailConfirmation(invoiceObj, callback) {
       let attach = new mailgun.Attachment({data: qrCode, filename: 'qrCode.png', contentType: 'image/png'})
 
       let emailMeta = {
-        from: 'Excited User <me@samples.mailgun.org>',
+        from: 'E-MOBiE Support<support@e-mobie.com>',
         to: invoiceObj.purchaser,
         subject: 'Your recent E-Mobie Purchase',
         html: parsedEmail,
