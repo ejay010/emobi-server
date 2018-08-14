@@ -14,7 +14,7 @@ function GeneratePasswordResetlink(req, res, error) {
         fs.readFile(__dirname +'/../Emails/Templates/resetpassword.html', 'utf8', function (error, htmlresponse) {
           let templateFunction = dot.template(htmlresponse)
 
-          MailGun.Sendto(response.email, "E-Mobie Reset Password Request", templateFunction({resetlink:
+          MailGun.Sendto(customer.email, "E-Mobie Reset Password Request", templateFunction({resetlink:
             process.env.VUE_URL + '/#/ResetPassword?token='+response.token
           }))
           res.sendStatus(200)
