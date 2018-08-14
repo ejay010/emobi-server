@@ -26,7 +26,7 @@ function ResetPassword(req, res, error) {
               }
             })
           })
-          PasswordReset.findByIdAndRemove(req.body.token)
+          PasswordReset.findByIdAndDelete(req.body.token).exec()
         }
       })
     } else {
