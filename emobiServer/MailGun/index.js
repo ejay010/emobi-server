@@ -12,9 +12,9 @@ let MailGun = {
       })
 
     return mailgunApi.messages().send({
-      from: 'Excited User <me@samples.mailgun.org>',
-      to: 'ejay010@gmail.com',
-      subject: 'Welcome :)',
+      from: 'E-MOBiE Support<support@e-mobie.com>',
+      to: to,
+      subject: subject,
       html: template
     }, function (error, body) {
       if (error) {

@@ -3,6 +3,8 @@ const multer = require('multer');
 const upload = multer({ dest: 'profile_pics/'})
 
 function routes(app, passport) {
+  app.post('/Customer/requestPasswordReset', require('./requestPasswordReset.js'))
+  app.post('/Customer/resetpassword', require('./resetpassword.js'))
   app.post('/Customer/register', require('./register-mongo.js'))
   app.post('/Customer/login', passport.authenticate('local'), require('./login.js'))
   app.post('/Customer/updateInfo', passport.authenticationMiddleware(), require('./updateInfo.js'))

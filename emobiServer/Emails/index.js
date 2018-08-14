@@ -14,6 +14,19 @@ let Mail = {
       return string
     }
   },
+
+  ResetPassword: function (user) {
+    fs.readFile(__dirname +'/Templates/resetpassword.html', 'utf8', function (error, data) {
+      SendMeText(error, data)
+    })
+
+    function SendMeText(error, response) {
+      if (error) throw error;
+      let templateFunction = dot.template(response)
+      let string = templateFunction(user)
+      return string
+    }
+  },
 }
 
 module.exports = Mail

@@ -1,7 +1,6 @@
 const ioredis = require('ioredis');
 const bcrypt = require('bcrypt');
 const CustomerClass = require('./Customer-mongo.js');
-const Emails = require('../Emails');
 const fs = require('fs');
 const MailGun = require('../MailGun');
 const dot = require('dot');
@@ -22,7 +21,6 @@ function register(req, res) {
     CustomerClass.findOne({'email': new_customer.email}).then((response) => {
       if (response == null) {
         CustomerClass.create(new_customer).then((response) => {
-          // Emails.Welcome(response);
           fs.readFile(__dirname +'/../Emails/Templates/welcome.html', 'utf8', function (error, htmlresponse) {
             let templateFunction = dot.template(htmlresponse)
 
