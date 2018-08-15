@@ -90,7 +90,7 @@ function processPurchase(req, res, error) {
             rsvp_list: rsvp,
             ticketId: req.body.ticket._id,
             guest_passes: guest_passes
-          }).then((response) => {
+          }).populate('eventId').then((response) => {
             //notify customer via email
 
                   // create awesome qr data link
