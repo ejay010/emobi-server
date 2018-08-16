@@ -10,7 +10,9 @@ function ResetPassword(req, res, error) {
       // verify token link to correct Customer
       Customer.findById(Token.customer_id).then((Customer) => {
         if (Customer != null) {
-          PasswordReset.findByIdAndDelete(Token._id).exec()
+          // console.log(PasswordReset);
+          PasswordReset.deleteOne({ _id: Token._id}).exec()
+          // PasswordReset.findOneAndDelete({ _id: Token._id}).exec()
 
           // Hash the new password and set it
           const saltRounds = 10

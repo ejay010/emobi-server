@@ -51,18 +51,24 @@
       <table style="box-sizing: border-box; border-collapse: separate !important; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;" width="100%">
         <tr>
           <td style="box-sizing: border-box; font-family: 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif; font-size: 14px; vertical-align: top;" valign="top">
-            <h4 class="align-center" style="color: #111111 !important; font-family: 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif; font-weight: 300; line-height: 1.4em; margin: 0; margin-bottom: 30px; font-size: 38px; text-transform: capitalize; text-align: center;">Your E-Mobie Ticket</h4>
+            <h5 class="align-center" style="color: #111111 !important; font-family: 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif; font-weight: 300; line-height: 1.4em; margin: 0; margin-bottom: 30px; font-size: 28px; text-transform: capitalize; text-align: center;">Your E-Mobie Ticket</h5>
             <p class="align-center" style="font-family: 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: center;">
               <img src="cid:qrCode.png" alt="Ticket QR Code" style="-ms-interpolation-mode: bicubic; max-width: 100%;"/>
             </p>
-            <p class="align-center" style="font-family: 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: center;">
-              Event: {{=it.eventId.title}}
-            </p>
-            <p class="align-center" style="font-family: 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: center;">
+            <p style="font-family: 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: center;">
               Invoice ID: {{=it._id}}
             </p>
-            <p class="align-center" style="font-family: 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: center;">
-              Event ID: {{=it.eventId}}
+            <p style="font-family: 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: center;">
+              Event: {{=it.eventId.title}} <br />
+              {{? it.eventId.description}}
+              {{=it.eventId.description}}
+              {{?}}
+            </p>
+            <p style="font-family: 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: center;">
+              Ticket: {{=it.ticketId.title}} <br />
+              {{? it.ticketId.description}}
+              {{=it.ticketId.description}}
+              {{? }}
             </p>
           </td>
         </tr>

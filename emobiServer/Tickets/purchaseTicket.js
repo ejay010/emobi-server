@@ -17,7 +17,7 @@ function sendEmailConfirmation(invoiceObj, callback) {
       let templateFunction = dot.template(rawEmail)
       let parsedEmail = templateFunction(invoiceObj)
       let qrCode = ''
-      let qrURL = "?eventId=" + invoiceObj.eventId + "&invoiceId=" + invoiceObj._id + "&isPurchaser=true"
+      let qrURL = "?eventId=" + invoiceObj.eventId._id + "&invoiceId=" + invoiceObj._id + "&isPurchaser=true"
       new awesomeQR().create({
         text: qrURL,
         size: 350,
@@ -90,16 +90,16 @@ function processPurchase(req, res, error) {
             rsvp_list: rsvp,
             ticketId: req.body.ticket._id,
             guest_passes: guest_passes
-          }).populate('eventId').then((response) => {
-            //notify customer via email
-
-                  // create awesome qr data link
-                  //parse to string
-                  // response.qrData = qrURL
-            sendEmailConfirmation(response, function (error, body) {
-              // IDEA: Do some meta data logging here.
-              // IDEA: Change this function to a promise.
+          }).then((response) => {
+            PurchaseOrder.findById(response._id).populate('eventId').populate('ticketId').exec((err, results) => {
+              if (err == null) {
+                sendEmailConfirmation(results, function (error, body) {
+                  // IDEA: Do some meta data logging here.
+                  // IDEA: Change this function to a promise.
+                })
+              }
             })
+
             PurchaseOrder.findById(response._id).populate('eventId').populate('ticketId').then((response) => {
               //notify app of sale
               let redis = new ioredis
