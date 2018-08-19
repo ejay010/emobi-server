@@ -10,7 +10,6 @@ function ResetPassword(req, res, error) {
       // verify token link to correct Customer
       Customer.findById(Token.customer_id).then((Customer) => {
         if (Customer != null) {
-          // console.log(PasswordReset);
           PasswordReset.deleteOne({ _id: Token._id}).exec()
           // PasswordReset.findOneAndDelete({ _id: Token._id}).exec()
 

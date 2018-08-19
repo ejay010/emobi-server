@@ -3,9 +3,7 @@ const mailgun = require('mailgun-js');
 let MailGun = {
   Sendto: function (to, subject, template) {
     let api_key = process.env.MAILGUN_API_KEY;
-    console.log(api_key);
     let DOMAIN = process.env.MAILGUN_API_DOMAIN;
-    console.log(DOMAIN);
     let mailgunApi = require('mailgun-js')({
         apiKey: api_key,
         domain: DOMAIN
