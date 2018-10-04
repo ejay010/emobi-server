@@ -43,7 +43,9 @@
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "pdfmake": "^0.1.37",
+    "sharp": "^0.20.8",
     "socket.io": "^2.0.4",
+    "thumbnail": "^0.1.9",
     "twilio": "^3.17.3"
   }
 }

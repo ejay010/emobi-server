@@ -1,118 +1,86 @@
 const Events = require('./Events-mongo.js');
 const fs = require('fs');
 const ioredis = require('ioredis');
+const Thumbnail = require('thumbnail');
 
-function EditEvent(req, res) {
-  let redis = new ioredis()
-  let Data = JSON.parse(req.body.seedData);
+function processImages(req, res, cb) {
   if (req.file != null) {
     fs.rename(req.file.path, req.file.path+'-'+req.file.originalname, function (error) {
       if (error) {
         console.log(error);
+        cb(req, res, true, null)
+      } else {
+        cb(req, res, true, null)
+        // let thumbnail = new Thumbnail('flyers', req.file.destination)
+        // thumbnail.ensureThumbnail(req.file.filename+'-'+req.file.originalname, 150, null, function (error, thumbnailPath) {
+        //   if (error == null) {
+        //     cb(req, res, true, thumbnailPath)
+        //   } else {
+        //     console.log(error);
+        //     cb(req, res, true, null)
+        //   }
+        // })
       }
     })
+  } else {
+    cb(req, res, true, null)
   }
-  Events.findById(Data.eventObj._id).then((events) => {
-    events.category = Data.eventObj.category
-    events.description = Data.eventObj.description
-    events.title = Data.eventObj.title
-    if (req.file != null) {
-      events.flyer = JSON.stringify(req.file)
-    }
-    events.startTime = Data.startTimestamp
-    events.finishTime = Data.finishTimestamp
-    events.location = Data.location
+}
 
-    events.save().then((response) => {
-      if (response.status == 'published') {
+function UpdateEvent(req, res, finishedProccessing, thumbnail_path) {
+    let redis = new ioredis()
+    let Data = JSON.parse(req.body.seedData);
+    if (finishedProccessing) {
+      Events.findById(Data.eventObj._id).then((events) => {
+        events.category = Data.eventObj.category
+        events.description = Data.eventObj.description
+        events.title = Data.eventObj.title
+        if (req.file != null) {
+          events.flyer = JSON.stringify(req.file)
+          events.flyer_thumbnail = thumbnail_path
+        }
+        events.startTime = Data.startTimestamp
+        events.finishTime = Data.finishTimestamp
+        events.location = Data.location
 
-        redis.publish('customerNotifications', JSON.stringify({
-                    from: "server",
-                    to: "all",
-                    message: "Event Updated",
-                    redis: {
-                      type: "hash",
-                      key: response._id,
-                      data: response
-                    }
-                  }))
-      }
+        events.save().then((response) => {
+          if (response.status == 'published') {
 
-      redis.publish('customerNotifications', JSON.stringify({
-                  from: "server",
-                  to: response.publisher,
-                  message: "Event Updated",
-                  redis: {
-                    type: "hash",
-                    key: response._id,
-                    data: response
-                  }
-                }))
+            redis.publish('customerNotifications', JSON.stringify({
+                        from: "server",
+                        to: "all",
+                        message: "Event Updated",
+                        redis: {
+                          type: "hash",
+                          key: response._id,
+                          data: response
+                        }
+                      }))
+          }
 
-      res.send({
-        success: true,
-        recieved: response,
-        message: "Event Updated"
+          redis.publish('customerNotifications', JSON.stringify({
+                      from: "server",
+                      to: response.publisher,
+                      message: "Event Updated",
+                      redis: {
+                        type: "hash",
+                        key: response._id,
+                        data: response
+                      }
+                    }))
+
+          res.send({
+            success: true,
+            recieved: response,
+            message: "Event Updated"
+          })
+        })
       })
-    })
-  })
-  // eventsClass.GetEvent(Data.eventObj.rediskey).then((response) => {
-  //   let temp = response
-  //   response.category = Data.eventObj.category
-  //     response.description = Data.eventObj.description
-  //     response.title = Data.eventObj.title
-  //     response.flyer = JSON.stringify(req.file)
-  //     response.startTime = Data.startTimestamp
-  //     response.finishTime = Data.finishTimestamp
-  //     let newEvent = response
-  //
-  //     eventsClass.Update(response.rediskey, response).then((response) => {
-  //       if (response == "OK") {
-  //
-  //         eventsClass.Storage.redis.publish('customerNotifications', JSON.stringify({
-  //                     from: "server",
-  //                     to: newEvent.publisher,
-  //                     message: "Event Updated",
-  //                     redis: {
-  //                       type: "hash",
-  //                       key: newEvent.rediskey,
-  //                       data: newEvent
-  //                     }
-  //                   }));
-  //                   if (newEvent.status == 'published') {
-  //                     eventsClass.Storage.redis.publish('customerNotifications', JSON.stringify({
-  //                                 from: "server",
-  //                                 to: "all",
-  //                                 message: "Event Updated",
-  //                                 redis: {
-  //                                   type: "hash",
-  //                                   key: Data.eventObj.rediskey,
-  //                                   data: newEvent
-  //                                 }
-  //                               }));
-  //                   }
-  //                       res.send({
-  //                         success: true,
-  //                         recieved: newEvent,
-  //                         message: "Event Updated"
-  //                       })
-  //                 } else {
-  //                   res.send({
-  //                     success: false,
-  //                     recieved: Data,
-  //                     message: "There was an error. Event Failed to Updated, please contact System Admin",
-  //                     error: e
-  //                   })
-  //                 }
-  //     })
-  // }).catch((e) => {
-  //     res.send({
-  //       success: false,
-  //       recieved: Data,
-  //       message: "There was an error. please contact System Admin",
-  //       error: e
-  //     })
-  // })
+    }
+}
+
+function EditEvent(req, res) {
+  processImages(req, res, UpdateEvent)
 }
 
 module.exports = EditEvent

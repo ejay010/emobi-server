@@ -9,18 +9,26 @@ function ProcessPurchase(req, res, error) {
           res.send({
             success: true,
             message: "Invoice Found",
-            invoice: result
+            invoice: result,
+            isPurchaser: true
           })
         } else {
-          if (req.body.listType == 'rsvp') {
+          if (req.body.rsvp != null) {
             let rsvp_list = result.rsvp_list
-            let ticket = rsvp_list[req.body.listPosition]
-            if (ticket != null) {
+            let ticket_found = false
+            let ticket = null
+            rsvp_list.forEach((rsvp) => {
+              if (rsvp.email == req.body.rsvp) {
+                ticket_found = true
+                ticket = rsvp
+              }
+            })
+            if (ticket_found != false) {
               res.send({
                 success: true,
                 message: "Ticket Validated",
-                ticket_info: ticket,
-                purchaser: result.purchaser
+                invoice: ticket,
+                isPurchaser: false
               })
             } else {
               res.send({

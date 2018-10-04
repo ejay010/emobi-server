@@ -12,6 +12,7 @@ function createTicket(req, res, error) {
     })
   }
   let customerData = JSON.parse(req.body.seedData)
+  console.log(customerData);
   customerData.publisher = req.params.customer
   customerData.ticket_image = JSON.stringify(req.file)
   customerData.eventId = req.params.eventId
@@ -23,39 +24,30 @@ Tickets.create(customerData).then((createdTicket) => {
       currentTickets.push(createdTicket.id)
       customerEvent.tickets = currentTickets
       customerEvent.save().then((response) => {
-        let redis = new ioredis()
-        redis.publish('customerNotifications', JSON.stringify({
-          from: "server",
-          to: response.publisher,
-          message: "Ticket Created",
-          redis: {
-            type: "hash",
-            key: createTicket.id,
-            data: createdTicket
-          }
-        }))
-        if (customerEvent.status == 'published') {
+        // let redis = new ioredis()
+        // redis.publish('customerNotifications', JSON.stringify({
+        //   from: "server",
+        //   to: response.publisher,
+        //   message: "Ticket Created",
+        //   redis: {
+        //     type: "hash",
+        //     key: createTicket.id,
+        //     data: createdTicket
+        //   }
+        // }))
           EventClass.findById(response._id).populate('tickets').then((results) => {
-            console.log(results);
-            redis.publish('eventViewNotification', JSON.stringify({
-              from: 'server',
-              to: customerEvent._id,
-              message: "Event Updated",
-              data: results
-            }))
+            // redis.publish('eventViewNotification', JSON.stringify({
+            //   from: 'server',
+            //   to: customerEvent._id,
+            //   message: "Event Updated",
+            //   data: createdTicket
+            // }))
             res.send({
               success: true,
               message: "Ticket Created",
-              data: results
+              data: createdTicket
             })
           })
-        } else {
-          res.send({
-            success: true,
-            message: "Ticket Created",
-            data: results
-          })
-        }
       })
     })
   }

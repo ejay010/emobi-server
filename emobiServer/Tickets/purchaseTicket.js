@@ -52,6 +52,51 @@ function sendEmailConfirmation(invoiceObj, callback) {
   })
 }
 
+function sendEmailInvite(rsvp, invoiceObj, callback) {
+  // get email file
+  fs.readFile(path.join(__dirname, '..', 'Emails', 'Templates', 'transaction.html'), 'utf8', function (error, data) {
+    if (error == null) {
+      let rawEmail = data;
+      console.log('Invite Email part');
+      let templateFunction = dot.template(rawEmail)
+      let parsedEmail = templateFunction(invoiceObj)
+      let qrCode = ''
+      let qrURL = "?eventId=" + invoiceObj.eventId._id + "&invoiceId=" + invoiceObj._id + "&isPurchaser=false&rsvp=" + rsvp.email
+      new awesomeQR().create({
+        text: qrURL,
+        size: 300,
+        callback: (data) => {
+          qrCode = data
+        }
+      })
+      // load mailgun
+      let api_key = process.env.MAILGUN_API_KEY;
+      let DOMAIN = process.env.MAILGUN_API_DOMAIN;
+      let mailgun = require('mailgun-js')({
+        apiKey: api_key,
+        domain: DOMAIN
+      })
+      let attach = new mailgun.Attachment({data: qrCode, filename: 'qrCode.png', contentType: 'image/png'})
+
+      let emailMeta = {
+        from: 'E-MOBiE Pass<sales@e-mobie.com>',
+        to: rsvp.email,
+        subject: 'E-Mobie Pass',
+        html: parsedEmail,
+        inline: attach
+      }
+
+      //fire mail gun
+      mailgun.messages().send(emailMeta, function (error, body) {
+        console.log(body);
+        callback(error, body)
+      })
+    } else {
+      callback(error, 'there was an error')
+    }
+  })
+}
+
 function processPurchase(req, res, error) {
   Tickets.findById(req.body.ticket._id).then((foundTicket) => {
     if (foundTicket.eventId == req.body.eventId) {
@@ -94,8 +139,18 @@ function processPurchase(req, res, error) {
             PurchaseOrder.findById(response._id).populate('eventId').populate('ticketId').exec((err, results) => {
               if (err == null) {
                 sendEmailConfirmation(results, function (error, body) {
+                  console.log(body);
                   // IDEA: Do some meta data logging here.
                   // IDEA: Change this function to a promise.
+                })
+                results.rsvp_list.forEach((rsvp) => {
+                  if (rsvp.email != results.purchaser) {
+                    sendEmailInvite(rsvp, results, function (error, body) {
+                      console.log(body);
+                        // IDEA: Do some meta data logging here.
+                        // IDEA: Change this function to a promise.
+                    })
+                  }
                 })
               }
             })
