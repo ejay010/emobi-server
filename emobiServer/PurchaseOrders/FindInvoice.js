@@ -1,4 +1,4 @@
-const Invoice = require('./PurchaseOrderModel.js');
+const Invoice = require('./Invoice.js');
 
 function FindInvoice(req, res, error) {
   Invoice.findById(req.params.invoice_id).populate('eventId').populate('ticketId').then((results) => {

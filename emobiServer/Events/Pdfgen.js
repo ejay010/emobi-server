@@ -1,7 +1,7 @@
 const Events = require('./Events-mongo.js');
 const pdfMakePrinter = require('pdfmake/src/printer');
 const fs = require('fs');
-const Invoices = require('../PurchaseOrders/PurchaseOrderModel.js');
+const Invoices = require('../PurchaseOrders').Model;
 
 function generatePdf(docDefinition, callback) {
   try {

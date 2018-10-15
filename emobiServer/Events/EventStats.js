@@ -1,5 +1,6 @@
 const Events = require('./Events-mongo.js');
-const Invoice = require('../PurchaseOrders/PurchaseOrderModel.js');
+
+const Invoice = require('../PurchaseOrders').Model;
 
 async function findInvoices(customerEvents, cb) {
   let promise = new Promise(function(resolve, reject) {

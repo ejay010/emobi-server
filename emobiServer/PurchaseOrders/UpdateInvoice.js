@@ -1,4 +1,4 @@
-const Invoice = require('./PurchaseOrderModel.js');
+const Invoice = require('./Invoice.js');
 function UpdateInvoice(req, res, error) {
   Invoice.findById(req.params.purchaseOrderId).then((result, error) => {
     //will recieve guest list with updated status

@@ -1,6 +1,6 @@
 const awesomeQR = require('awesome-qr');
 const querystring = require('querystring');
-const Invoice = require('../PurchaseOrders/PurchaseOrderModel.js');
+const Invoice = require('../PurchaseOrders').Model;
 
 function GenerateQRCode(req, res, error) {
   // find the ticket

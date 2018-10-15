@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-let POSchema = mongoose.Schema({
+let InvoiceSchema = mongoose.Schema({
   created_at: {type: Date, default: Date.now },
   purchaser: String,
   eventId: {type: mongoose.Schema.ObjectId, ref: 'Events'},
@@ -11,6 +11,6 @@ let POSchema = mongoose.Schema({
   ticketId: {type: mongoose.Schema.ObjectId, ref: 'Tickets'}
 })
 
-let PurchaseOrder = mongoose.model('Invoice', POSchema)
+let Invoice = mongoose.model('Invoice', InvoiceSchema)
 
-module.exports = PurchaseOrder
+module.exports = Invoice

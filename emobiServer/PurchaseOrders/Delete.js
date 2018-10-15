@@ -1,4 +1,4 @@
-const Invoice = require('./PurchaseOrderModel.js');
+const Invoice = require('./Invoice.js');
 function DeleteInvoice(req, res, error) {
   Invoice.findByIdAndRemove(req.params.invoice_id).then((response) => {
     res.send({

@@ -22,7 +22,7 @@ function sendInviteEmail(inviteObj) {
 
         let emailMeta = {
           from: 'E-MOBiE Support<support@e-mobie.com>',
-          to: inviteObj.to_email,
+          to: inviteObj.email,
           subject: 'You\'ve been invited to an E-Mobie event :D',
           html: parsedEmail,
         }
@@ -44,13 +44,13 @@ function createInvite(inviteSeed, index_position, ticketObj) {
     eventId: ticketObj.eventId,
     ticketId: ticketObj._id,
     index_position: index_position,
-    to_name: inviteSeed.name,
-    to_email: inviteSeed.email
+    name: inviteSeed.name,
+    email: inviteSeed.email
   }).then((results) => {
     return Invite.findByIdAndUpdate({ _id: results._id}, {status: 'Sent'}, {new: true}).populate('eventId').populate('ticketId').then((res) => {
-      let url = process.env.VUE_URL + '/invite/' + results._id + '/rsvp_confirm'
+      let url = process.env.VUE_URL + '/#/invite/' + results._id + '/rsvp_confirm'
       res.invite_url = url
-      sendInviteEmail(res) // hand email response seprately using REDIS??
+      sendInviteEmail(res) // handle email response seprately using REDIS??
       return res
     })
   })

@@ -6,8 +6,8 @@ let INVITEschema = mongoose.Schema({
   eventId: {type: mongoose.Schema.ObjectId, ref: 'Events'},
   ticketId: {type: mongoose.Schema.ObjectId, ref: 'Tickets'},
   email_sent_counter: {type: Number, default: 0},
-  to_email: String,
-  to_name: String,
+  email: String,
+  name: String,
   index_position: {type: Number, default: 0},
   status: {type: String, default: 'Not_Sent'}
 })

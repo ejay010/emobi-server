@@ -1,4 +1,4 @@
-const PO = require('./PurchaseOrderModel.js');
+const PO = require('./Invoice.js');
 const ioredis = require('ioredis');
 function ProcessPurchase(req, res, error) {
   PO.findById(req.params.purchaseOrderId).then((result) => {
