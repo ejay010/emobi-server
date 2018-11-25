@@ -12,8 +12,8 @@ const RedisStore = require('connect-redis')(session);
 const app = express();
 
 let options = {
-    key: fs.readFileSync('/etc/nginx/ssl/api.e-mobie.com/324318/server.key'),
-    cert: fs.readFileSync('/etc/nginx/ssl/api.e-mobie.com/324318/server.crt')
+    key: fs.readFileSync('/etc/nginx/ssl/api.e-mobie.com/448045/server.key'),
+    cert: fs.readFileSync('/etc/nginx/ssl/api.e-mobie.com/448045/server.crt')
 };
 const server = require('https').createServer(options, app);
 // const server = require('http').createServer(app);
@@ -41,9 +41,17 @@ io.on('connection', function (socket) {
   })
 })
 
+let whitelist = [process.env.VUE_FRONTEND_URL, process.env.VUE_ADMIN_URL]
+
 app.use(flash())
 app.use(cors({
-  "origin": process.env.VUE_URL,
+  "origin": function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
   "credentials": true,
   "exposed": [
     'set-Cookie',

@@ -9,7 +9,8 @@ let INVITEschema = mongoose.Schema({
   email: String,
   name: String,
   index_position: {type: Number, default: 0},
-  status: {type: String, default: 'Not_Sent'}
+  status: {type: String, default: 'Not_Sent'},
+  soft_delete: {type: Boolean, default: false}
 })
 
 let Invite = mongoose.model('Invite', INVITEschema)

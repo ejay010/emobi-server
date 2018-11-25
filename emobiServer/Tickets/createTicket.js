@@ -2,12 +2,25 @@ const Tickets = require('./tickets-mongo.js');
 const fs = require('fs');
 const EventClass = require('../Events').Class;
 const ioredis = require('ioredis');
+const jimp = require('jimp');
+const probe = require('probe-image-size');
+
 
 function createTicket(req, res, error) {
+  // console.log(req.file);
   if (req.file != null) {
+        console.log('inside loop');
     fs.rename(req.file.path, req.file.path+'-'+req.file.originalname, function (error) {
       if (error) {
         console.log(error);
+      }
+      else {
+        jimp.read(req.file.path+'-'+req.file.originalname, (err, originalImage) => {
+          if (err) {
+            console.log(err);
+          }
+          originalImage.resize(100, jimp.AUTO).write(req.file.path+'-ticket_stub-'+req.file.originalname)
+        })
       }
     })
   }

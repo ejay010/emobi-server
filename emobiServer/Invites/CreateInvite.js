@@ -1,4 +1,5 @@
 const Invite = require('./invite.js');
+const Tickets = require('../Tickets').Class;
 const Mailgun = require('mailgun-js');
 const dot = require('dot');
 const path = require('path');
@@ -60,12 +61,20 @@ async function Create(req, res, error) {
   let ticketObj = req.body.ticketObj
   let invites_list = req.body.invitelist
   let invited = []
-   for (var i = 0; i < invites_list.length; i++) {
-    if (invites_list[i].status === 'Not Sent') {
-      let createdInvite = await createInvite(invites_list[i], i, ticketObj)
-      invited.push(createdInvite)
+  Tickets.findById(ticketObj._id).then(async (results) => {
+    if (results.quantity_available > 0) {
+       for (var i = 0; i < invites_list.length; i++) {
+        if (invites_list[i].status === 'Not Sent') {
+          let createdInvite = await createInvite(invites_list[i], i, ticketObj)
+          invited.push(createdInvite)
+          results.quantity_available -= 1
+        }
+      }
     }
-  }
+    results.save(function (err, updatedResult) {
+      console.log(updatedResult);
+    })
+  })
   res.send(invited)
 }
 

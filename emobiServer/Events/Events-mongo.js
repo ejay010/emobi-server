@@ -15,8 +15,10 @@ location: String,
   // flyer: mongoose.Schema.Types.ObjectId,
   category: String,
   Tags: Array,
-  startTime: String
+  startTime: String,
   // startTime: Date
+  soft_delete: {type: Boolean, default: false}
+
 })
 
 let Events = mongoose.model('Events', EventsSchema)

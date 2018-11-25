@@ -22,7 +22,8 @@ let TicketSchema = mongoose.Schema({
   price: {type: Number, default: 0},
   invoices: Array,
   ticket_type: {type: String, default: 'public'},
-  secret_code: {type: String, set: hashSecret}
+  secret_code: {type: String, set: hashSecret},
+  soft_delete: {type: Boolean, default: false}
 })
 
 let Ticket = mongoose.model('Tickets', TicketSchema)

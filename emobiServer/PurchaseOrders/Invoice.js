@@ -8,7 +8,8 @@ let InvoiceSchema = mongoose.Schema({
   invoice_life: Number,
   rsvp_list: [],
   guest_passes: [],
-  ticketId: {type: mongoose.Schema.ObjectId, ref: 'Tickets'}
+  ticketId: {type: mongoose.Schema.ObjectId, ref: 'Tickets'},
+  soft_delete: {type: Boolean, default: false}
 })
 
 let Invoice = mongoose.model('Invoice', InvoiceSchema)

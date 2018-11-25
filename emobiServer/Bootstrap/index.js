@@ -6,6 +6,7 @@ const tickets = require('../Tickets');
 const PurchaseOrders = require('../PurchaseOrders');
 const Mail = require('../MailGun');
 const Invites = require('../Invites');
+const admin = require('../Administration');
 
 function init(app) {
   authentication.init(app);
@@ -15,6 +16,7 @@ function init(app) {
   PurchaseOrders.init(app, passport)
   Invites.init(app, passport)
   // Mail.init(app, passport)
+  admin.init(app, passport)
 }
 
 module.exports = {init: init}

@@ -7,7 +7,8 @@ let EventFlyerSchema = mongoose.Schema({
   destination: String,
   filename: String,
   path: String,
-  size: Number
+  size: Number,
+  soft_delete: {type: Boolean, default: false}
 })
 
 let EventFlyer = mongoose.model('Flyers', EventFlyerSchema)
