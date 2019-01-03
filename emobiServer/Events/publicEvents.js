@@ -1,4 +1,5 @@
 const Events = require('./Events-mongo.js');
+const io = require('socket.io')();
 function publicEvents(req, res, error) {
   // let events = new Events()
 

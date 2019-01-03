@@ -35,16 +35,17 @@ function sendEmailInvite(rsvp, invoiceObj, callback) {
       let attach = new mailgun.Attachment({data: qrCode, filename: 'qrCode.png', contentType: 'image/png'})
 
       let emailMeta = {
-        from: 'E-MOBiE Pass<sales@e-mobie.com>',
+        from: 'E-MOBiE Sales <sales@e-mobie.com>',
         to: rsvp.email,
         subject: 'E-Mobie Pass',
         html: parsedEmail,
         inline: attach
       }
+      // console.log(emailMeta);
 
       //fire mail gun
       mailgun.messages().send(emailMeta, function (error, body) {
-        console.log(body);
+        // console.log(body);
         callback(error, body)
       })
     } else {
@@ -54,6 +55,7 @@ function sendEmailInvite(rsvp, invoiceObj, callback) {
 }
 
 function ConfirmRsvp(req, res, error) {
+  // console.log(req.body)
   // Find invite
 Invite.findById(req.params.invite_id).then((results) => {
   if (results.email === req.body.confirmed_email) {
@@ -64,8 +66,8 @@ Invite.findById(req.params.invite_id).then((results) => {
       let rsvp_layout = {
         name: updated_results.name,
         email: updated_results.email,
-        dob: null,
-        phone: null,
+        dob: req.body.dob,
+        phone: req.body.phone,
         guest_spot: false,
         signed_in: false,
       }
@@ -76,27 +78,36 @@ Invite.findById(req.params.invite_id).then((results) => {
         if (foundTicket.price != null) {
           ticket_cost = foundTicket.price
         }
-        Invoice.create({
-          purchaser: req.body.confirmed_email,
-          eventId: foundTicket.eventId,
-          cost: (ticket_cost * 1),
-          contents: rsvp,
-          invoice_life: 1,
-          rsvp_list: rsvp,
-          ticketId: foundTicket._id,
-          guest_passes: []
-        }).then((response) => {
-          Invoice.findById(response._id).populate('eventId').populate('ticketId').exec((err, results) => {
-            sendEmailInvite(rsvp_layout, results, function (error, body) {
-              res.send({
-                error,
-                body
+        Tickets.findByIdAndUpdate({_id: foundTicket._id}, { $inc: { quantity_available: -1 }}, function (err, updated_ticket) {
+          if (err == null) {
+            Invoice.create({
+              purchaser: req.body.confirmed_email,
+              eventId: foundTicket.eventId,
+              cost: (ticket_cost * 1),
+              contents: rsvp,
+              invoice_life: 1,
+              rsvp_list: rsvp,
+              ticketId: foundTicket._id,
+              guest_passes: []
+            }).then((response) => {
+              Invoice.findById(response._id).populate('eventId').populate('ticketId').exec((err, results) => {
+                console.log(results);
+                sendEmailInvite(rsvp_layout, results, function (error, body) {
+                  res.send({
+                    error,
+                    body
+                  })
+                })
               })
             })
-          })
+          } else {
+            res.send({
+              err,
+              message: 'There is a problem, can\'t update the ticket'
+            })
+          }
         })
       })
-
     })
   }
 })

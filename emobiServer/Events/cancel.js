@@ -7,10 +7,10 @@ function CancelEvent(req, res) {
     if (response) {
       response.status = 'unpublished'
       response.save().then((response) => {
-        redis.publish('customerNotifications', JSON.stringify({
+        redis.publish('CUSTOMER_NOTIFICATION', JSON.stringify({
           from: "server",
           to: "all",
-          message: "Event Canceled",
+          message: "EVENT_CANCELED",
           redis: {
             type: "JSON",
             key: response.id,

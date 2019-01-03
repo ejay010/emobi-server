@@ -3,6 +3,7 @@ const upload = multer({ dest: 'flyers/'})
 
 function init(app, passport) {
   app.get('/events/published', require('./eventPool.js'))
+  app.get('/events/private/published', require('./privatePool.js'))
   app.post('/createEvent', passport.authenticationMiddleware(), require('./create.js'))
   app.get('/events/:eventId/publish', passport.authenticationMiddleware(), require('./publish.js'))
   app.get('/events/:eventId/cancel', passport.authenticationMiddleware(), require('./cancel.js'))

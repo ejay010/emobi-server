@@ -1,6 +1,7 @@
 const Events = require('./Events-mongo.js');
 const Storage = require('./Storage.js');
 const ioredis = require('ioredis');
+const io = require('socket.io')();
 function PublishEvent(req, res) {
 
   Events.findById(req.params.eventId).populate('tickets').then((response) => {
@@ -9,10 +10,10 @@ function PublishEvent(req, res) {
       let redis = new ioredis()
       current.status = "published"
       current.save().then((response) => {
-        redis.publish('customerNotifications', JSON.stringify({
+        redis.publish('CUSTOMER_NOTIFICATION', JSON.stringify({
           from: "server",
           to: "all",
-          message: "Event Published",
+          message: "EVENT_PUBLISHED",
           redis: {
             type: "JSON",
             key: response.id,
@@ -25,6 +26,7 @@ function PublishEvent(req, res) {
           message: "Event Published",
           updatedEvent: response
         })
+
       })
     } else {
       res.send({
