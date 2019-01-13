@@ -66,7 +66,7 @@ function sendEmailInvite(rsvp, invoiceObj, callback) {
       // console.log(msg);
       sgMail.send(msg).then((response) => {
         // success
-        callback(response, null)
+        callback(null, response)
       }).catch((error) => {
         // error
         callback(error, null)
