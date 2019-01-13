@@ -56,19 +56,15 @@
               <img src="cid:qrCode.png" alt="Ticket QR Code" style="-ms-interpolation-mode: bicubic; max-width: 100%;"/>
             </p>
             <p style="font-family: 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: center;">
-              Invoice ID: {{=it._id}}
+              Invoice ID: {{invoiceId}}
             </p>
             <p style="font-family: 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: center;">
-              Event: {{=it.eventId.title}} <br />
-              {{? it.eventId.description}}
-              {{=it.eventId.description}}
-              {{?}}
+              Event: {{eventTitle}} <br />
+              {{eventDescription}}
             </p>
             <p style="font-family: 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: center;">
-              Ticket: {{=it.ticketId.title}} <br />
-              {{? it.ticketId.description}}
-              {{=it.ticketId.description}}
-              {{? }}
+              Ticket: {{ticketTitle}} <br />
+              {{ticketDescription}}
             </p>
           </td>
         </tr>

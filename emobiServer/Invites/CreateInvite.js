@@ -1,6 +1,7 @@
 const Invite = require('./invite.js');
 const Tickets = require('../Tickets').Class;
-const Mailgun = require('mailgun-js');
+// const Mailgun = require('mailgun-js');
+const sgMail = require('@sendgrid/mail');
 const dot = require('dot');
 const path = require('path');
 const fs = require('fs');
@@ -44,55 +45,44 @@ const _ = require('lodash');
 
 function sendBatchEmails(error, createdInvites) {
   if (error != null) {
+    console.log(error);
     return error
   } else {
-    let r_variables = {}
-    let to_string = ''
+    let personalizations = []
+    let recipient_object = {}
     for (var i = 0; i < createdInvites.length; i++) {
-      r_variables[createdInvites[i].email] = {
-        "eventName": createdInvites[i].eventId.title,
-        "ticketId": createdInvites[i].ticketId._id,
-        "ticketTitle": createdInvites[i].ticketId.title,
-        "invite_url": process.env.VUE_FRONTEND_URL+'/#/invite/'+ createdInvites[i]._id +'/rsvp_confirm'
+      recipient_object.to = createdInvites[i].email
+      recipient_object.subject = 'You\'ve been invited to an E-Mobie event :D',
+      recipient_object.substitutions = {
+        'eventName': createdInvites[i].eventId.title,
+        'ticketId': createdInvites[i].ticketId._id,
+        'ticketTitle': createdInvites[i].ticketId.title,
+        'invite_url': process.env.VUE_FRONTEND_URL+'/#/invite/'+ createdInvites[i]._id + '/rsvp_confirm'
       }
-      if (i == (createdInvites.length - 1)) {
-        to_string += createdInvites[i].email
-      } else {
-        to_string += createdInvites[i].email + ', '
-      }
+      personalizations.push(recipient_object)
+      recipient_object = {}
     }
-
-    // load mailgun
-    let api_key = process.env.MAILGUN_API_KEY;
-    let DOMAIN = process.env.MAILGUN_API_DOMAIN;
-    let mailgun = require('mailgun-js')({
-      apiKey: api_key,
-      domain: DOMAIN
-    })
 
      fs.readFile(path.join(__dirname, '..', 'Emails', 'Templates', 'invite_batch.html'), 'utf8', function (error, data) {
       if (error == null) {
         let rawData = data
         let emailMeta = {
+          personalizations,
           from: 'E-MOBiE Support<support@e-mobie.com>',
-          to: to_string,
           subject: 'You\'ve been invited to an E-Mobie event :D',
           html: rawData,
-          'recipient-variables': r_variables
         }
-       mailgun.messages().send(emailMeta, function (error, body) {
-          if (error != null) {
-            console.log(error);
-            // Use redis to communicate email success
-          } else {
-            for (var i = 0; i < createdInvites.length; i++) {
-              Invite.update({_id: createdInvites[i]._id}, {status: 'Sent'}, function (error, done) {
-                // Use redis to communicate email success
-                console.log(done);
-                console.log(error);
-              })
-            }
-          }
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+        sgMail.send(emailMeta).then((response) => {
+          for (var i = 0; i < createdInvites.length; i++) {
+                 Invite.update({_id: createdInvites[i]._id}, {status: 'Sent'}, function (error, done) {
+                   // Use redis to communicate email success
+                   console.log(done);
+                   console.log(error);
+                 })
+               }
+        }).catch((error) => {
+          console.log(error);
         })
       }
     })

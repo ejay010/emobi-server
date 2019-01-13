@@ -4,7 +4,8 @@ const ioredis = require('ioredis');
 const dot = require('dot');
 const fs = require('fs');
 const path = require('path');
-const mailgun = require('mailgun-js');
+// const mailgun = require('mailgun-js');
+const sgMail = require('@sendgrid/mail');
 const awesomeQR = require('awesome-qr');
 
 
@@ -13,11 +14,8 @@ function sendEmailConfirmation(invoiceObj, callback) {
   fs.readFile(path.join(__dirname, '..', 'Emails', 'Templates', 'transaction.html'), 'utf8', function (error, data) {
     if (error == null) {
       let rawEmail = data;
-      // console.log(invoiceObj);
-      let templateFunction = dot.template(rawEmail)
-      let parsedEmail = templateFunction(invoiceObj)
       let qrCode = ''
-      let qrURL = "?eventId=" + invoiceObj.eventId._id + "&invoiceId=" + invoiceObj._id + "&isPurchaser=true"
+      let qrURL = "?invoiceId=" + invoiceObj._id + "&isPurchaser=true&email=" + invoiceObj.purchaser
       new awesomeQR().create({
         text: qrURL,
         size: 350,
@@ -25,27 +23,37 @@ function sendEmailConfirmation(invoiceObj, callback) {
           qrCode = data
         }
       })
-      // load mailgun
-      let api_key = process.env.MAILGUN_API_KEY;
-      let DOMAIN = process.env.MAILGUN_API_DOMAIN;
-      let mailgun = require('mailgun-js')({
-        apiKey: api_key,
-        domain: DOMAIN
-      })
-      let attach = new mailgun.Attachment({data: qrCode, filename: 'qrCode.png', contentType: 'image/png'})
 
-      let emailMeta = {
-        from: 'E-MOBiE Support<support@e-mobie.com>',
+      sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+      const msg = {
         to: invoiceObj.purchaser,
+        from: 'E-Mobie Support <support@e-mobie.com>',
         subject: 'Your recent E-Mobie Purchase',
-        html: parsedEmail,
-        inline: attach
+        text: 'Testing testing sendgrid',
+        html: rawEmail,
+        substitutions: {
+          'invoiceId': invoiceObj._id,
+          'eventTitle': invoiceObj.eventId.title,
+          'eventDescription': invoiceObj.eventId.description,
+          'ticketTitle': invoiceObj.ticketId.title,
+          'ticketDescription': invoiceObj.ticketId.description
+        },
+        attachments: [
+          {
+            content: Buffer.from(qrCode).toString('base64'),
+            filename: 'qrCode.png',
+            type: 'image/png',
+            disposition: 'inline',
+            content_id: 'qrCode.png'
+          },
+        ],
       }
 
-      //fire mail gun
-      mailgun.messages().send(emailMeta, function (error, body) {
+      //post to sendgrid
+      sgMail.send(msg, function (error, body) {
         callback(error, body)
       })
+
     } else {
       callback(error, 'there was an error')
     }
@@ -57,11 +65,8 @@ function sendEmailInvite(rsvp, invoiceObj, callback) {
   fs.readFile(path.join(__dirname, '..', 'Emails', 'Templates', 'transaction.html'), 'utf8', function (error, data) {
     if (error == null) {
       let rawEmail = data;
-      console.log('Invite Email part');
-      let templateFunction = dot.template(rawEmail)
-      let parsedEmail = templateFunction(invoiceObj)
       let qrCode = ''
-      let qrURL = "?eventId=" + invoiceObj.eventId._id + "&invoiceId=" + invoiceObj._id + "&isPurchaser=false&rsvp=" + rsvp.email
+      let qrURL = "?invoiceId=" + invoiceObj._id + "&rsvp=1&email=" + rsvp.email
       new awesomeQR().create({
         text: qrURL,
         size: 300,
@@ -69,26 +74,55 @@ function sendEmailInvite(rsvp, invoiceObj, callback) {
           qrCode = data
         }
       })
-      // load mailgun
-      let api_key = process.env.MAILGUN_API_KEY;
-      let DOMAIN = process.env.MAILGUN_API_DOMAIN;
-      let mailgun = require('mailgun-js')({
-        apiKey: api_key,
-        domain: DOMAIN
-      })
-      let attach = new mailgun.Attachment({data: qrCode, filename: 'qrCode.png', contentType: 'image/png'})
+      // // load mailgun
+      // let api_key = process.env.MAILGUN_API_KEY;
+      // let DOMAIN = process.env.MAILGUN_API_DOMAIN;
+      // let mailgun = require('mailgun-js')({
+      //   apiKey: api_key,
+      //   domain: DOMAIN
+      // })
+      // let attach = new mailgun.Attachment({data: qrCode, filename: 'qrCode.png', contentType: 'image/png'})
+      //
+      // let emailMeta = {
+      //   from: 'E-MOBiE Sales<sales@e-mobie.com>',
+      //   to: rsvp.email,
+      //   subject: 'E-Mobie Pass',
+      //   html: parsedEmail,
+      //   inline: attach
+      // }
+      //
+      // //fire mail gun
+      // mailgun.messages().send(emailMeta, function (error, body) {
+      //   console.log(body);
+      //   callback(error, body)
+      // })
 
-      let emailMeta = {
-        from: 'E-MOBiE Pass<sales@e-mobie.com>',
-        to: rsvp.email,
-        subject: 'E-Mobie Pass',
-        html: parsedEmail,
-        inline: attach
+      sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+      const msg = {
+        to: invoiceObj.purchaser,
+        from: 'E-Mobie Support <support@e-mobie.com>',
+        subject: 'Your recent E-Mobie Purchase',
+        html: rawEmail,
+        substitutions: {
+          'invoiceId': invoiceObj._id,
+          'eventTitle': invoiceObj.eventId.title,
+          'eventDescription': invoiceObj.eventId.description,
+          'ticketTitle': invoiceObj.ticketId.title,
+          'ticketDescription': invoiceObj.ticketId.description
+        },
+        attachments: [
+          {
+            content: Buffer.from(qrCode).toString('base64'),
+            filename: 'qrCode.png',
+            type: 'image/png',
+            disposition: 'inline',
+            content_id: 'qrCode.png'
+          },
+        ],
       }
 
-      //fire mail gun
-      mailgun.messages().send(emailMeta, function (error, body) {
-        console.log(body);
+      //post to sendgrid
+      sgMail.send(msg, function (error, body) {
         callback(error, body)
       })
     } else {

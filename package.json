@@ -20,6 +20,7 @@
     "babel-preset-save": "^1.2.0"
   },
   "dependencies": {
+    "@sendgrid/mail": "^6.3.1",
     "awesome-qr": "^1.2.0",
     "bcrypt": "^1.0.3",
     "bluebird": "^3.5.1",
