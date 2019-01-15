@@ -99,7 +99,7 @@ function sendEmailInvite(rsvp, invoiceObj, callback) {
 
       sgMail.setApiKey(process.env.SENDGRID_API_KEY);
       const msg = {
-        to: invoiceObj.purchaser,
+        to: rsvp.email,
         from: 'E-Mobie Support <support@e-mobie.com>',
         subject: 'Your recent E-Mobie Purchase',
         html: rawEmail,
