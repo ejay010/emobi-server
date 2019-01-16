@@ -15,7 +15,7 @@ function sendEmailConfirmation(invoiceObj, callback) {
     if (error == null) {
       let rawEmail = data;
       let qrCode = ''
-      let qrURL = "?invoiceId=" + invoiceObj._id + "&isPurchaser=true&email=" + invoiceObj.purchaser
+      let qrURL = "?invoiceId=" + invoiceObj._id + "&eventId=" + invoiceObj.eventId._id +"&isPurchaser=true&email=" + invoiceObj.purchaser
       new awesomeQR().create({
         text: qrURL,
         size: 350,
@@ -60,13 +60,13 @@ function sendEmailConfirmation(invoiceObj, callback) {
   })
 }
 
-function sendEmailInvite(rsvp, invoiceObj, callback) {
+function sendRsvpEmailInvite(rsvp, invoiceObj, callback) {
   // get email file
   fs.readFile(path.join(__dirname, '..', 'Emails', 'Templates', 'transaction.html'), 'utf8', function (error, data) {
     if (error == null) {
       let rawEmail = data;
       let qrCode = ''
-      let qrURL = "?invoiceId=" + invoiceObj._id + "&rsvp=1&email=" + rsvp.email
+      let qrURL = "?invoiceId=" + invoiceObj._id + "&eventId=" + invoiceObj.eventId._id + "&rsvp=1&email=" + rsvp.email
       new awesomeQR().create({
         text: qrURL,
         size: 300,
@@ -74,28 +74,6 @@ function sendEmailInvite(rsvp, invoiceObj, callback) {
           qrCode = data
         }
       })
-      // // load mailgun
-      // let api_key = process.env.MAILGUN_API_KEY;
-      // let DOMAIN = process.env.MAILGUN_API_DOMAIN;
-      // let mailgun = require('mailgun-js')({
-      //   apiKey: api_key,
-      //   domain: DOMAIN
-      // })
-      // let attach = new mailgun.Attachment({data: qrCode, filename: 'qrCode.png', contentType: 'image/png'})
-      //
-      // let emailMeta = {
-      //   from: 'E-MOBiE Sales<sales@e-mobie.com>',
-      //   to: rsvp.email,
-      //   subject: 'E-Mobie Pass',
-      //   html: parsedEmail,
-      //   inline: attach
-      // }
-      //
-      // //fire mail gun
-      // mailgun.messages().send(emailMeta, function (error, body) {
-      //   console.log(body);
-      //   callback(error, body)
-      // })
 
       sgMail.setApiKey(process.env.SENDGRID_API_KEY);
       const msg = {
@@ -179,13 +157,14 @@ function processPurchase(req, res, error) {
                 })
                 results.rsvp_list.forEach((rsvp) => {
                   if (rsvp.email != results.purchaser) {
-                    sendEmailInvite(rsvp, results, function (error, body) {
+                    sendRsvpEmailInvite(rsvp, results, function (error, body) {
                       console.log(body);
                         // IDEA: Do some meta data logging here.
                         // IDEA: Change this function to a promise.
                     })
                   }
                 })
+                // No emails for guest pass
               }
             })
 
