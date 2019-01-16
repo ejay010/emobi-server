@@ -2,9 +2,10 @@ const Invoice = require('./Invoice.js');
 
 function VerifyQr(req, res, error) {
   // res.send(req.body)
-  Invoice.findById(req.params.invoice_id).then((results) => {
+  console.log(req.body);
+  Invoice.findById(req.params.invoice_id).then((results, error) => {
     // scanner must be on appropriate event and the invoice must be for that event
-    if (results != null) {
+    if (error == null) {
       if (results.eventId == req.body.scanner_event_id) {
         res.send({invoice: results, success: true})
       } else {
