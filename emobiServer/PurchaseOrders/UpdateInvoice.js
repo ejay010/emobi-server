@@ -69,8 +69,6 @@ function UpdateInvoice(req, res, error) {
         message: 'Invoice not found'
       })
     }
-
-
     res.send({
       message: 'hello'
     })
