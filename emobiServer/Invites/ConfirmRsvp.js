@@ -94,7 +94,7 @@ Invite.findById(req.params.invite_id).then((results) => {
         dob: req.body.dob,
         phone: req.body.phone,
         guest_spot: false,
-        signed_in: false,
+        scanned_in: false,
       }
       rsvp.push(rsvp_layout)
 

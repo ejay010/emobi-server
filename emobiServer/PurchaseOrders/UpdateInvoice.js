@@ -1,77 +1,62 @@
 const Invoice = require('./Invoice.js');
 function UpdateInvoice(req, res, error) {
+  console.log('incoming request');
+  console.log(req.body);
   Invoice.findById(req.params.invoice_id).then((result, error) => {
     if (result != null) {
       if (result.eventId == req.body.scanner_event_id) {
-        if ((result.eventId == req.body.eventId)) {
+        // event confirmed via scanner
+        //find contents
 
+        //update contents
+        let old_contents = result.contents
+        let guest_count = 0
+        for (var i = 0; i < req.body.GuestList.length; i++) {
+          if (req.body.GuestList[i].rsvp == false) {
+            guest_count += 1
+          }
         }
+        for (var i = 0; i < old_contents.length; i++) {
+          if (old_contents[i].guest_spot == false) { // if rsvp
+            if (old_contents[i].email == req.body.GuestList[i].email) {
+              old_contents[i].scanned_in = true
+              result.invoice_life -= 1
+            }
+          }
+          // add guest_spot check
+          console.log(guest_count);
+
+          if ((old_contents[i].guest_spot) && (guest_count > 0)) {
+            if (old_contents[i].scanned_in != true) {
+              old_contents[i].scanned_in = true
+              guest_count -= 1
+              result.invoice_life -= 1
+            }
+          }
+        }
+        result.contents = old_contents
+        result.markModified('contents')
+        result.markModified('invoice_life')
+
+        result.save(function (err, updated_result) {
+          if (err) {
+            console.log(err);
+            res.send(err)
+          } else {
+            res.send({
+              success: true,
+              message: "Invoice Updated",
+              invoice: updated_result
+            })
+          }
+        })
       }
-          //sanity check
-          // if (new_guestlist.length != current_guestlist.length) {
-          //   res.send({
-          //     success: false,
-          //     message: "Guest List Invalid",
-          //     error: "Guest list comparison does not match"
-          //   })
-          // } else {
-          //   let changeCount = 0
-          //   new_guestlist.forEach((spot, spot_index) => {
-          //     if (spot.guest_spot == false) { // check to see if we are on a rsvp
-          //       if (spot.email == current_guestlist[spot_index].email) { // compare list contents and verify person is on both lists
-          //         if (spot.outstanding != current_guestlist[spot_index].outstanding) { // check to see if this person checked in
-          //           if ((spot.outstanding == false) && (current_guestlist[spot_index].outstanding == true)) {
-          //             // person has arrived update, document record
-          //             changeCount += 1
-          //             result.contents[spot_index].outstanding = spot.outstanding // This line updates the document's record
-          //             result.markModified('contents')
-          //             // Since we have rsvp list
-          //             result.rsvp_list.forEach((rsvp) => {
-          //               if (rsvp.email == spot.email) {
-          //                 rsvp.outstanding = false
-          //               }
-          //             })
-          //             result.markModified('rsvp_list')
-          //           }
-          //         }
-          //       }
-          //     } else {
-          //       if ((spot.outstanding == false) && (current_guestlist[spot_index].outstanding == true)) {
-          //         changeCount += 1
-          //         result.contents[spot_index].outstanding = spot.outstanding // this is for guest spots
-          //         result.markModified('contents')
-          //         let usedGuestPasses = 0
-          //
-          //         for (var i = 0; i < result.guest_passes.length; i++) {
-          //           if (usedGuestPasses <= 0) {
-          //             result.guest_passes[i].outstanding = false
-          //             usedGuestPasses += 1
-          //           }
-          //         }
-          //         result.markModified('guest_passes')
-          //       }
-          //     }
-          //   }) // end of foreach scan
-          //   // res.send({count: changeCount})
-          //   console.log(result);
-          //
-          //   result.save().then((updatedItem) => {
-          //     res.send({
-          //       success: true,
-          //       message: "Invoice Updated",
-          //       invoice: updatedItem
-          //     })
-          //   })
-          // }
     } else {
       res.send({
         success: false,
         message: 'Invoice not found'
       })
     }
-    res.send({
-      message: 'hello'
-    })
   })
 }
 

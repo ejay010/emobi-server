@@ -120,12 +120,12 @@ function processPurchase(req, res, error) {
       let total_passes = req.body.guestList.length
       let guest_passes = req.body.guestList.filter(obj => obj.guest_spot == true)
       guest_passes.forEach((pass) => {
-        pass.outstanding = true
+        pass.scanned_in = false
       })
 
       let rsvp = req.body.guestList.filter(obj => obj.guest_spot == false)
       rsvp.forEach((pass) => {
-        pass.outstanding = true
+        pass.scanned_in = false
       })
 
       if ((foundTicket.quantity_available - total_passes) >= 0) {
