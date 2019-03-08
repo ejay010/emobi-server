@@ -8,9 +8,8 @@ console.log(req.body);
     // res.send(req.body)
     let responsebody = {
       message: [{
-        status: 1,
-        text: 'Thanks for playing'
-      }]
+        status: 1}, {        text: 'Thanks for playing'
+}]
     }
     let xmlstring = xml(responsebody)
     console.log(xmlstring);
