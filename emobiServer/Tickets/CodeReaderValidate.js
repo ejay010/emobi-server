@@ -13,7 +13,8 @@ console.log(req.body);
       }
     }
     console.log(xml);
-    res.send(xml(responsebody))
+    let xmlstring = xml(responsebody)
+    res.send(xmlstring)
 }
 
 module.exports = validateScan
