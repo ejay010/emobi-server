@@ -1,7 +1,6 @@
 const builder = require('xmlbuilder');
 function validateScan(req, res, error) {
-console.log('we got a hit');
-console.log(req.body);
+console.log('we got a hit2');
     let responsebody = builder.create({
       message: {
         status: 1,
@@ -10,7 +9,7 @@ console.log(req.body);
     })
     // let xmlstring = xml(responsebody)
     console.log(responsebody);
-    res.type('application/xml')
+    res.type('text/xml')
     res.send(responsebody)
 }
 
