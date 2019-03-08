@@ -50,6 +50,6 @@
     "socket.io": "^2.2.0",
     "thumbnail": "^0.1.9",
     "twilio": "^3.29.1",
-    "xml": "^1.0.1"
+    "xmlbuilder": "^11.0.0"
   }
 }
