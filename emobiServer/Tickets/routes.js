@@ -10,6 +10,7 @@ function routes(app, passport) {
   app.get('/tickets/:customer/tickets',  require('./CustomerTickets.js'))
   app.get('/tickets/qrCode/:eventId/:invoiceId', require('./QrGenerator.js'))
   app.post('/tickets/:id/update', passport.authenticationMiddleware(), upload.single('ticket_image'), require('./UpdateTicket.js'))
+  app.post('/tickets/codeReader/validate', require('./CodeReaderValidate.js'))
 }
 
 module.exports = routes
