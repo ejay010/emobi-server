@@ -12,6 +12,7 @@ console.log(req.body);
         text: 'Thanks for playing'
       }
     }
+    console.log(xml);
     res.send(xml(responsebody))
 }
 
