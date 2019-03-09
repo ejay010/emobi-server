@@ -1,22 +1,18 @@
-const builder = require('xmlbuilder');
+const builder = require('xml-js');
 function validateScan(req, res, error) {
 console.log('we got a hit2');
-    // let responsebody = builder.create({
-    //   message: {
-    //     status: 1,
-    //     text: 'Thanks for playing'
-    //   }
-    // })
-    let responsebody = builder.create('message')
-    responsebody.ele('status', 1)
-    responsebody.ele('text', 'Thanks for playing')
-    responsebody.doc().end({ pretty: true})
-    console.log(responsebody);
-    // console.log(res);
+
+    let res = builder.js2xml({
+      message: {
+        status: 1,
+        text: 'Thanks for playing'
+      }
+    }, {compact: true})
+    console.log(res);
     // let responsebody = 'hello'
     // let xmlstring = xml(responsebody)
     // console.log(responsebody);
-    res.type('text/xml').send(responsebody)
+    res.type('text/xml').send(res)
 }
 
 module.exports = validateScan
