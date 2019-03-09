@@ -10,6 +10,7 @@ console.log('we got a hit2');
     let responsebody = builder.create('message')
     responsebody.ele('status', 1)
     responsebody.ele('text', 'Thanks for playing')
+    responsebody.end()
     console.log(responsebody);
     // console.log(res);
     // let responsebody = 'hello'
