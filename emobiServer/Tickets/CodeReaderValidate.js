@@ -1,7 +1,7 @@
 const builder = require('xml-js');
 function validateScan(req, res, error) {
 console.log('we got a hit2');
-console.log(req.body);
+console.log(req);
 let lead = '<?xml version="1.0" encoding="UTF-8"?>'
 
     let resj = builder.js2xml({
