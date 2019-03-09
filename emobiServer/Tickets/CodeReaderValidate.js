@@ -1,6 +1,7 @@
 const builder = require('xml-js');
 function validateScan(req, res, error) {
 console.log('we got a hit2');
+console.log(req.body);
 
     let resj = builder.js2xml({
       message: {
