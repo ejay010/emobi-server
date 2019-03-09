@@ -2,6 +2,7 @@ const builder = require('xml-js');
 function validateScan(req, res, error) {
 console.log('we got a hit2');
 console.log(req.body);
+let lead = '<?xml version="1.0" encoding="UTF-8"?>'
 
     let resj = builder.js2xml({
       message: {
@@ -10,10 +11,11 @@ console.log(req.body);
       }
     }, {compact: true})
     console.log(resj);
+
     // let responsebody = 'hello'
     // let xmlstring = xml(responsebody)
     // console.log(responsebody);
-    res.type('text/xml').send(resj)
+    res.type('text/xml').send(lead + resj)
 }
 
 module.exports = validateScan
