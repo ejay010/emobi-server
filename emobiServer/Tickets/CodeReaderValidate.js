@@ -16,8 +16,7 @@ console.log('we got a hit2');
     // let responsebody = 'hello'
     // let xmlstring = xml(responsebody)
     // console.log(responsebody);
-    res.type('text/xml')
-    res.send(responsebody)
+    res.type('text/xml').send(responsebody)
 }
 
 module.exports = validateScan
