@@ -5,9 +5,11 @@ console.log(req.body);
 let lead = '<?xml version="1.0" encoding="UTF-8"?>'
 
     let resj = builder.js2xml({
-      message: {
-        status: 1,
-        text: 'Thanks for playing'
+      xml: {
+        message: {
+          status: 1,
+          text: 'Thanks for playing'
+        }
       }
     }, {compact: true})
     console.log(resj);
