@@ -10,6 +10,7 @@ const cors = require('cors');
 const ioredis = require('ioredis');
 const RedisStore = require('connect-redis')(session);
 const app = express();
+const bodyParser = require('body-parser');
 
 let options = {
     key: fs.readFileSync('/etc/nginx/ssl/api.e-mobie.com/448045/server.key'),
@@ -27,7 +28,8 @@ mongoose.Promise = global.Promise
 let db = mongoose.connection
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-io.on('connection', function (socket) {
+let nsp = io.of('/system-events')
+nsp.on('connection', function (socket) {
   let frontendRedis = new ioredis();
   frontendRedis.subscribe('customerNotifications')
   frontendRedis.on('message', function (channel, message) {
@@ -46,11 +48,12 @@ let whitelist = [process.env.VUE_FRONTEND_URL, process.env.VUE_ADMIN_URL]
 app.use(flash())
 app.use(cors({
   "origin": function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1 || !origin) {
-      callback(null, true)
-    } else {
-      callback(new Error('Not allowed by CORS'))
-    }
+    callback(null, true)
+    // if (whitelist.indexOf(origin) !== -1 || !origin) {
+    //   callback(null, true)
+    // } else {
+    //   callback(new Error('Not allowed by CORS'))
+    // }
   },
   "credentials": true,
   "exposed": [
@@ -69,6 +72,14 @@ app.use(passport.initialize());
 app.use(passport.session())
 app.use(express.static('flyers'))
 app.use(express.static('profile_pics'))
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+
+app.post('/playplay', function (req, res, error) {
+  res.send({
+    message: 'go to sleep phase 1 complete'
+  })
+})
 
 require('./Bootstrap').init(app);
 

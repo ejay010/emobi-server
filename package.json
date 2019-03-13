@@ -24,6 +24,7 @@
     "awesome-qr": "^1.2.0",
     "bcrypt": "^3.0.4",
     "bluebird": "^3.5.3",
+    "body-parser": "^1.18.3",
     "connect-flash": "^0.1.1",
     "connect-history-api-fallback": "^1.6.0",
     "connect-redis": "^3.4.0",
