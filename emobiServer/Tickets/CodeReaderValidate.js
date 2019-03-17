@@ -15,7 +15,7 @@ let lead = '<?xml version="1.0" encoding="UTF-8"?>'
       xml: {
         message: {
           status: 1,
-          text: 'Thanks for playing'
+          text: 'Thanks for playing local'
         }
       }
     }, {compact: true})
