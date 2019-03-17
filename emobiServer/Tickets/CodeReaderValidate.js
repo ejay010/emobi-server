@@ -1,9 +1,13 @@
 const builder = require('xml-js');
 const querystring = require('querystring');
-function validateScan(req, res, error) {
+const Invoice = require('../PurchaseOrders').Model;
 
-let ticketstring = querystring.parse(req.body.tid)
-console.log(ticketstring);
+
+function validateScan(req, res, error) {
+let ticketscan = querystring.parse(req.body.tid)
+console.log(ticketscan);
+console.log(ticketscan['?invoiceId']);
+// let invoiceInfo = Invoice.findById(ticketscan['?invoiceId'])
 
 let lead = '<?xml version="1.0" encoding="UTF-8"?>'
 
