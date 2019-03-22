@@ -22,7 +22,7 @@ const io = require('socket.io')(server);
 
 let redis = new ioredis();
 let mongoDB = 'mongodb://localhost/emobi'
-mongoose.connect(mongoDB)
+mongoose.connect(mongoDB, {useNewUrlParser: true})
 mongoose.Promise = global.Promise
 
 let db = mongoose.connection
