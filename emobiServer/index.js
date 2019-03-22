@@ -82,6 +82,7 @@ app.post('/playplay', function (req, res, error) {
 })
 
 require('./Bootstrap').init(app);
+require('./Mobile').init(app)
 
 server.listen(3000, (err) => {
   if (err) {

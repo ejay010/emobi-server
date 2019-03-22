@@ -6,7 +6,8 @@ let CustomerSchema = mongoose.Schema({
   username: String,
   status: String,
   ProfilePic: String,
-  soft_delete: {type: Boolean, default: false}
+  soft_delete: {type: Boolean, default: false},
+  admin: {type: Boolean, default: false}
 })
 let Customer = mongoose.model('Customer', CustomerSchema)
 
