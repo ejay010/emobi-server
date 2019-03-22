@@ -12,12 +12,12 @@ const RedisStore = require('connect-redis')(session);
 const app = express();
 const bodyParser = require('body-parser');
 
-// let options = {
-//     key: fs.readFileSync('/etc/nginx/ssl/api.e-mobie.com/448045/server.key'),
-//     cert: fs.readFileSync('/etc/nginx/ssl/api.e-mobie.com/448045/server.crt')
-// };
-// const server = require('https').createServer(options, app);
-const server = require('http').createServer(app);
+let options = {
+    key: fs.readFileSync('/etc/nginx/ssl/api.e-mobie.com/448045/server.key'),
+    cert: fs.readFileSync('/etc/nginx/ssl/api.e-mobie.com/448045/server.crt')
+};
+const server = require('https').createServer(options, app);
+// const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 
 let redis = new ioredis();
@@ -48,12 +48,12 @@ let whitelist = [process.env.VUE_FRONTEND_URL, process.env.VUE_ADMIN_URL]
 app.use(flash())
 app.use(cors({
   "origin": function (origin, callback) {
-    // callback(null, true)
-    if (whitelist.indexOf(origin) !== -1 || !origin) {
-      callback(null, true)
-    } else {
-      callback(new Error('Not allowed by CORS'))
-    }
+    callback(null, true)
+    // if (whitelist.indexOf(origin) !== -1 || !origin) {
+    //   callback(null, true)
+    // } else {
+    //   callback(new Error('Not allowed by CORS'))
+    // }
   },
   "credentials": true,
   "exposed": [
