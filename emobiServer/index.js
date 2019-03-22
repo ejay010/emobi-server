@@ -84,7 +84,7 @@ app.post('/playplay', function (req, res, error) {
 require('./Bootstrap').init(app);
 require('./Mobile').init(app)
 
-server.listen(3000, 'api.e-mobie.com', (err) => {
+server.listen(3000, '10.132.81.244', (err) => {
   if (err) {
     console.log('Error: '+ err);
   }
