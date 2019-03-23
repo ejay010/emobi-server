@@ -31,7 +31,7 @@ function Authenticate() {
   // opts.audience = 'ePassReader'
 
   passport.use(new JwtStrategy(opts, function (jwt_payload, done) {
-    console.log(jwt_payload._id);
+    console.log(jwt_payload);
     console.log('hello');
     return done(null, {test: true}, {message: 'We got a token :)'})
   }))
