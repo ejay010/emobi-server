@@ -1,28 +1,34 @@
 const passport = require('passport');
 const bcrypt = require('bcrypt');
 const User = require('../../Customer').Class;
+const LocalStrategy = require('passport-local').Strategy;
+const CustomStrategy = require('passport-custom').Strategy;
+  const JwtStrategy = require('passport-jwt').Strategy;
+  const ExtractJwt = require('passport-jwt').ExtractJwt;
+
 
 function Authenticate() {
-  const LocalStrategy = require('passport-local').Strategy
-  passport.use('administrators', new LocalStrategy(function (username, password, done) {
-    User.findOne({email: username}).then((results) => {
-      if (results.admin == true) { // if user object contains admin tag
-        bcrypt.compare(password, results.password, (err, isValid) => {
-          if (err) {
-            return done(err)
-          }
-          if (isValid) {
-            return done(null, results)
+  passport.use('administrators', new CustomStrategy(
+    function (req, done) {
+      if (req.body.user != null && req.body.user.username != null) {
+        User.findOne({email: req.body.user.username}).then((results) => {
+          if (results.admin == true) { // if user object contains admin tag
+            bcrypt.compare(req.body.user.password, results.password, (err, isValid) => {
+              if (err) {
+                return done(err)
+              }
+              if (isValid) {
+                return done(null, results)
+              }
+            })
+          } else {
+            return done(null, false)
           }
         })
       } else {
         return done(null, false)
       }
-    })
   }))
-
-  const JwtStrategy = require('passport-jwt').Strategy;
-  const ExtractJwt = require('passport-jwt').ExtractJwt;
 
   let opts = {}
   opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
