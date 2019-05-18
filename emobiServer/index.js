@@ -75,14 +75,14 @@ app.use(express.static('profile_pics'))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-app.post('/playplay', function (req, res, error) {
+app.get('/playplay', function (req, res, error) {
   res.send({
     message: 'go to sleep phase 1 complete'
   })
 })
 
 require('./Bootstrap').init(app);
-require('./Mobile').init(app)
+// require('./Mobile').init(app)
 
 server.listen(3000, (err) => {
   if (err) {

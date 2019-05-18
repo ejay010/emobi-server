@@ -3,8 +3,8 @@ const bcrypt = require('bcrypt');
 const User = require('../../Customer').Class;
 const LocalStrategy = require('passport-local').Strategy;
 const CustomStrategy = require('passport-custom').Strategy;
-  const JwtStrategy = require('passport-jwt').Strategy;
-  const ExtractJwt = require('passport-jwt').ExtractJwt;
+const JwtStrategy = require('passport-jwt').Strategy;
+const ExtractJwt = require('passport-jwt').ExtractJwt;
 
 
 function Authenticate() {
