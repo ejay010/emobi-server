@@ -4,7 +4,6 @@ function eventPool(req, res, error) {
   let eventsClass = new Events()
 
   Events.find({status: 'published', eventType: 'Public'}).populate('tickets').then((response) => {
-    console.log(response);
     res.send(response)
   }).catch(e => {
     console.log(e);
