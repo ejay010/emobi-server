@@ -6,7 +6,7 @@ function eventPool(req, res, error) {
   Events.find({status: 'published', eventType: 'Public'}).populate('tickets').then((response) => {
     res.send(response)
   }).catch(e => {
-    console.log(e);
+    res.send(e);
   })
   //
   // function processRawArray(setMembers, done) {
