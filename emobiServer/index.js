@@ -49,11 +49,11 @@ app.use(flash())
 app.use(cors({
   "origin": function (origin, callback) {
     callback(null, true)
-    if (whitelist.indexOf(origin) !== -1 || !origin) {
-      callback(null, true)
-    } else {
-      callback(new Error('Not allowed by CORS'))
-    }
+    // if (whitelist.indexOf(origin) !== -1 || !origin) {
+    //   callback(null, true)
+    // } else {
+    //   callback(new Error('Not allowed by CORS'))
+    // }
   },
   "credentials": true,
   "exposed": [
