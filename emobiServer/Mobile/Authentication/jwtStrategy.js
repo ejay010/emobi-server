@@ -10,7 +10,6 @@ const ExtractJwt = require('passport-jwt').ExtractJwt;
 function Authenticate() {
   passport.use('administrators', new CustomStrategy(
     function (req, done) {
-      console.log(req);
       if (req.body.user != null && req.body.user.username != null) {
         User.findOne({email: req.body.user.username}).then((results) => {
           if (results != null && results.admin == true) { // if user object contains admin tag
