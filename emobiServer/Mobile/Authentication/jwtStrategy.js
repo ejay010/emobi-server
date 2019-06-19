@@ -13,8 +13,9 @@ function Authenticate() {
       if (req.body.user != null && req.body.user.username != null) {
         User.findOne({email: req.body.user.username}).then((results) => {
           if (results != null && results.admin == true) { // if user object contains admin tag
-            console.log(results.admin);
             bcrypt.compare(req.body.user.password, results.password, (err, isValid) => {
+              console.log(err);
+              console.log(isValid);
               if (err) {
                 console.log('error is');
                 console.log(err);
