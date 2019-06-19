@@ -14,14 +14,12 @@ function Authenticate() {
         User.findOne({email: req.body.user.username}).then((results) => {
           if (results != null && results.admin == true) { // if user object contains admin tag
             bcrypt.compare(req.body.user.password, results.password, (err, isValid) => {
-              console.log(err);
-              console.log(isValid);
-              if (err) {
+              if (err != null) {
                 console.log('error is');
                 console.log(err);
                 return done(err)
               }
-              if (isValid) {
+              if (isValid != null) {
                 console.log("valid is");
                 console.log(isValid);
                 return done(null, results)
