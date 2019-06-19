@@ -15,10 +15,12 @@ function Authenticate() {
           if (results != null && results.admin == true) { // if user object contains admin tag
             bcrypt.compare(req.body.user.password, results.password, (err, isValid) => {
               if (err) {
+                console.log('error is');
                 console.log(err);
                 return done(err)
               }
               if (isValid) {
+                console.log("valid is");
                 console.log(isValid);
                 return done(null, results)
               }
