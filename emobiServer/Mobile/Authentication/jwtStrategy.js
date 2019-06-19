@@ -19,7 +19,7 @@ function Authenticate() {
                 console.log(err);
                 return done(err)
               }
-              if (isValid != null) {
+              if (isValid == true) {
                 console.log("valid is");
                 console.log(isValid);
                 return done(null, results)
